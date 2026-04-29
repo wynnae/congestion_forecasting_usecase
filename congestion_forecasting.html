@@ -1,0 +1,1197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Predicting Power Grid Crises — AI Forecasting Science</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/theme/black.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Tokens ───────────────────────────────────────────────────────── */
+    :root {
+      --brand:   #0b6fbf;
+      --accent:  #e05c3a;
+      --gold:    #ffd27f;
+      --green:   #4ecf8e;
+      --muted:   #7a96ad;
+      --bg:      #0c1520;
+      --surface: #0f1f2e;
+      --border:  #1c3a52;
+    }
+    html, body { height: 100%; background: var(--bg); margin: 0; }
+    body { font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif; color: #f0f6ff; }
+
+    /* ── Reveal overrides ─────────────────────────────────────────────── */
+    .reveal { font-size: 18px; }
+    .reveal .slides section { padding: 28px 48px; box-sizing: border-box; }
+    h1 { font-weight: 700; font-size: 40px; margin: 0 0 10px; line-height: 1.1; }
+    h2 { font-weight: 600; font-size: 25px; margin: 0 0 12px; letter-spacing: -.2px; }
+    h3 { font-weight: 600; font-size: 17px; margin: 0 0 6px; }
+    h4 { font-weight: 600; font-size: 15px; margin: 0 0 4px; color: #cfe4ff; }
+    p, li { color: #cfe4ff; font-size: 14px; line-height: 1.5; }
+    .lead  { font-size: 19px; color: #e8f4ff; font-weight: 300; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .em    { color: var(--gold); font-weight: 600; }
+    .red   { color: #ff9580; }
+    .grn   { color: var(--green); }
+    .notes { display: none; }
+    small, .small { font-size: 12px; color: var(--muted); }
+
+    /* ── Layout helpers ───────────────────────────────────────────────── */
+    .two-col  { display: flex; gap: 28px; align-items: flex-start; }
+    .three-col{ display: flex; gap: 16px; align-items: flex-start; }
+
+    /* ── Tables ───────────────────────────────────────────────────────── */
+    table { border-collapse: collapse; width: 100%; }
+    table td, table th { padding: 8px 12px; border: 1px solid var(--border); font-size: 13px; }
+    table th { background: #0b3152; color: #cfe4ff; font-weight: 600; }
+    table td { background: #081c2c; color: #cfe4ff; }
+    table tr:nth-child(even) td { background: #0c2438; }
+
+    /* ── Badges ───────────────────────────────────────────────────────── */
+    .badge       { display:inline-block; padding:5px 12px; border-radius:999px; background:var(--brand);  color:#fff;          font-weight:600; font-size:12px; }
+    .badge-gold  { display:inline-block; padding:5px 12px; border-radius:999px; background:var(--gold);   color:#0c1520;       font-weight:600; font-size:12px; }
+    .badge-green { display:inline-block; padding:5px 12px; border-radius:999px; background:var(--green);  color:#0c1520;       font-weight:600; font-size:12px; }
+    .badge-red   { display:inline-block; padding:5px 12px; border-radius:999px; background:var(--accent); color:#fff;          font-weight:600; font-size:12px; }
+
+    /* ── Callouts ─────────────────────────────────────────────────────── */
+    .callout      { background:#0e2a40; border-left:4px solid var(--brand);  padding:10px 14px; border-radius:0 8px 8px 0; color:#cfe4ff; margin:6px 0; font-size:14px; }
+    .callout-gold { background:#1a1800; border-left:4px solid var(--gold);   padding:10px 14px; border-radius:0 8px 8px 0; color:#fbedc8; margin:6px 0; font-size:14px; }
+    .callout-red  { background:#1a0a08; border-left:4px solid var(--accent); padding:10px 14px; border-radius:0 8px 8px 0; color:#ffd5c8; margin:6px 0; font-size:14px; }
+    .callout-green{ background:#091a10; border-left:4px solid var(--green);  padding:10px 14px; border-radius:0 8px 8px 0; color:#c8ffd4; margin:6px 0; font-size:14px; }
+
+    /* ── Cards ────────────────────────────────────────────────────────── */
+    .cards { display:flex; gap:14px; flex-wrap:wrap; }
+    .card  { background:linear-gradient(150deg,#0e2030,#081828); border:1px solid var(--border); border-radius:13px; padding:16px 18px; flex:1; min-width:160px; box-shadow:0 5px 20px rgba(0,0,0,.45); }
+    .icon  { width:38px; height:38px; border-radius:9px; display:inline-flex; align-items:center; justify-content:center; background:#0e2c44; font-size:18px; margin-bottom:7px; }
+
+    /* ── Progress bars ────────────────────────────────────────────────── */
+    .prog-bar  { height:11px; border-radius:6px; background:#1c3a52; margin:3px 0; overflow:hidden; }
+    .prog-fill { height:100%; border-radius:6px; }
+
+    /* ── Slide tag (category label above title) ───────────────────────── */
+    .slide-tag { font-size:11px; font-weight:600; letter-spacing:1.3px; text-transform:uppercase; color:var(--brand); margin-bottom:5px; }
+
+    /* ── Encoder graphic ──────────────────────────────────────────────── */
+    .encoder-row  { display:flex; gap:10px; align-items:stretch; justify-content:center; flex-wrap:wrap; }
+    .encoder      { background:linear-gradient(160deg,#0b2238,#061628); border:1px solid #1c4060; padding:11px 13px; border-radius:9px; color:#cfe4ff; min-width:120px; text-align:center; flex:1; font-size:13px; }
+    .encoder .enc-icon { font-size:20px; margin-bottom:3px; }
+    .attn-block   { background:linear-gradient(90deg,#0b6fbf,#a03030); padding:14px 26px; border-radius:11px; color:#fff; font-weight:700; font-size:15px; text-align:center; }
+    .out-block    { background:#112a14; border:1px solid var(--green); padding:11px 16px; border-radius:9px; color:#c8ffd4; font-weight:600; text-align:center; min-width:200px; font-size:13px; }
+
+    /* ── Steps (pipeline funnel) ──────────────────────────────────────── */
+    .steps        { display:flex; gap:0; align-items:stretch; }
+    .step         { flex:1; background:#0e2030; border:1px solid var(--border); padding:12px 10px; text-align:center; position:relative; }
+    .step:first-child { border-radius:10px 0 0 10px; }
+    .step:last-child  { border-radius:0 10px 10px 0; border-color:var(--green); }
+    .step::after  { content:'→'; position:absolute; right:-14px; top:50%; transform:translateY(-50%); color:#4a7a9b; font-size:16px; font-weight:700; z-index:2; }
+    .step:last-child::after { display:none; }
+    .step-num     { font-size:22px; font-weight:700; color:var(--brand); display:block; }
+
+    /* ── Scale (FP vs FN bar) ─────────────────────────────────────────── */
+    .scale    { display:flex; border-radius:11px; overflow:hidden; height:54px; box-shadow:0 4px 16px rgba(0,0,0,.4); }
+    .scale-fp { flex:1.2; background:#0b3f5e; display:flex; align-items:center; justify-content:center; color:#9fd4ff; font-weight:600; font-size:13px; padding:6px; text-align:center; }
+    .scale-fn { flex:2;   background:#5e1a0a; display:flex; align-items:center; justify-content:center; color:#ffb4a2; font-weight:600; font-size:13px; padding:6px; text-align:center; }
+
+    /* ── Legend dot ───────────────────────────────────────────────────── */
+    .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+
+    /* ── Chart containers ─────────────────────────────────────────────── */
+    .chart { display:block; width:100%; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- ═══════════ SLIDE 1 — TITLE ═══════════ -->
+    <section>
+      <div style="display:flex;flex-direction:column;gap:14px;max-width:1060px;margin:0 auto;text-align:left;padding-top:20px">
+        <div class="slide-tag">Day-Ahead Transmission Congestion Forecasting</div>
+        <h1>Multi-Source Time Series Forecasting<br>for Grid Congestion Risk</h1>
+        <p class="lead">Cross-attention LSTM for day-ahead transmission constraint prediction
+        <!-- decorative bar -->
+        <div style="margin-top:18px;height:3px;width:100%;background:linear-gradient(90deg,var(--brand),var(--gold),var(--green),transparent);border-radius:2px"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════ SLIDE 2 — THE DAY-AHEAD DECISION ═══════════ -->
+    <section>
+      <div class="slide-tag">The Day-Ahead Decision</div>
+      <h2>Demand: 1,000 MW tomorrow at 6pm — which generators do you commit today?</h2>
+      
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:24px 0 20px">
+        <!-- Generator A -->
+        <div class="card" style="text-align:center;padding:20px 14px">
+          <div class="icon" style="margin:0 auto 10px">⚡</div>
+          <h4 style="font-size:15px;margin-bottom:8px">Baseload Plant</h4>
+          <div style="font-size:28px;font-weight:700;color:var(--green);margin:8px 0">300 MW</div>
+          <div style="font-size:13px;color:#cfe4ff;line-height:1.5;margin-bottom:10px">Always available<br>Reliable & cheap</div>
+          <div class="badge-green" style="font-size:11px">$30/MWh</div>
+        </div>
+        
+        <!-- Generator B -->
+        <div class="card" style="text-align:center;padding:20px 14px">
+          <div class="icon" style="margin:0 auto 10px;background:#1a3a14">🌬️</div>
+          <h4 style="font-size:15px;margin-bottom:8px">Wind Farm</h4>
+          <div style="font-size:28px;font-weight:700;color:var(--gold);margin:8px 0">400 MW</div>
+          <div style="font-size:13px;color:#cfe4ff;line-height:1.5;margin-bottom:10px">Forecast: 400 MW<br>±30% variability</div>
+          <div class="badge" style="font-size:11px;background:#4a7aad">$15/MWh</div>
+        </div>
+        
+        <!-- Generator C -->
+        <div class="card" style="text-align:center;padding:20px 14px">
+          <div class="icon" style="margin:0 auto 10px;background:#3a2a14">☀️</div>
+          <h4 style="font-size:15px;margin-bottom:8px">Solar Array</h4>
+          <div style="font-size:28px;font-weight:700;color:var(--gold);margin:8px 0">500 MW</div>
+          <div style="font-size:13px;color:#cfe4ff;line-height:1.5;margin-bottom:10px">Peak output: 500 MW<br>Cloud risk at 6pm</div>
+          <div class="badge" style="font-size:11px;background:#4a7aad">$10/MWh</div>
+        </div>
+        
+        <!-- Generator D -->
+        <div class="card" style="text-align:center;padding:20px 14px">
+          <div class="icon" style="margin:0 auto 10px;background:#3a1a14">🔥</div>
+          <h4 style="font-size:15px;margin-bottom:8px">Peaker Plant</h4>
+          <div style="font-size:28px;font-weight:700;color:var(--accent);margin:8px 0">300 MW</div>
+          <div style="font-size:13px;color:#cfe4ff;line-height:1.5;margin-bottom:10px">Emergency backup<br>Fast-start gas</div>
+          <div class="badge-red" style="font-size:11px">$200/MWh</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:20px;align-items:stretch;margin-bottom:18px">
+        <div class="card" style="flex:1;background:linear-gradient(150deg,#0a2414,#081c10);border:2px solid var(--green);padding:20px">
+          <h4 style="color:var(--green);font-size:16px;margin-bottom:10px">Strategy A: Play it safe</h4>
+          <div style="font-size:14px;line-height:1.6;color:#cfe4ff">
+            Baseload (300 MW) + Wind (400 MW) + Peaker (300 MW)<br>
+            <div style="margin:12px 0 0;padding-top:12px;border-top:1px solid rgba(78,207,142,0.2)">
+            <strong style="color:var(--green);font-size:15px">Cost: $45,000</strong><br>
+            <span style="color:#4ecf8e">✓ Guaranteed to meet 1,000 MW</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card" style="flex:1;background:linear-gradient(150deg,#1a0a08,#140806);border:2px solid var(--accent);padding:20px">
+          <h4 style="color:var(--accent);font-size:16px;margin-bottom:10px">Strategy B: Bet on renewables</h4>
+          <div style="font-size:14px;line-height:1.6;color:#cfe4ff">
+            Baseload (300 MW) + Wind (400 MW) + Solar (300 MW)<br>
+            <div style="margin:12px 0 0;padding-top:12px;border-top:1px solid rgba(224,92,58,0.2)">
+            <strong style="color:var(--gold);font-size:15px">Cost if right: $16,500</strong><br>
+            <span style="color:#ff9580">⚠ If renewables miss → call peaker at $200/MWh → $150K+</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout-gold" style="font-size:14px;max-width:1000px;margin:0 auto">
+        <strong class="em">The hidden cost:</strong> Emergency redispatch forces power through unplanned transmission paths. Lines overload. Congestion costs stack on top of fuel costs — another $200K–$2M.
+      </div>
+
+      <aside class="notes">
+        Walk through the scenario: "You need 1,000 MW tomorrow evening. You're committing today." Point to the four options. "Baseload is cheap and reliable — 300 MW guaranteed. Wind forecast says 400 MW but could swing ±30%. Solar could give you 500 MW but there's cloud risk at 6pm. And if you get it wrong, you call the peaker plant at $200/MWh."
+        
+        Present the trade-off: "Strategy A — lock in the expensive peaker now at day-ahead rates. Costs $45K but you're covered. Strategy B — bet that wind and solar deliver. If they do, you save $28K. If they don't, you're paying $150K+ for emergency dispatch."
+        
+        Key point: "This is the forecasting problem. Better renewable forecasts = better cost/risk decisions. That's where AI creates value — not by generating power, but by giving operators confidence to make the cheaper bet when it's justified."
+      </aside>
+    </section>
+
+    <!-- ═══════════ SLIDE 3 — THE PROBLEM ═══════════ -->
+    <section>
+      <div class="slide-tag">The Business Problem</div>
+      <h2>Transmission congestion costs the U.S. grid $20.8 billion annually<sup style="font-size:14px;color:var(--muted)">1</sup></h2>
+      
+      <div style="text-align:center;margin:28px 0 32px">
+        <div style="font-size:72px;font-weight:700;color:var(--gold);line-height:1;margin-bottom:8px">$20.8B</div>
+        <div style="font-size:15px;color:var(--muted)">U.S. annual congestion cost (2022)</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;max-width:900px;margin:0 auto 28px">
+        <div style="background:#0b1e30;border-radius:12px;padding:20px;text-align:center">
+          <div style="font-size:36px;font-weight:700;color:var(--accent);line-height:1">$3.1B</div>
+          <div style="font-size:13px;color:#cfe4ff;margin-top:10px;font-weight:600">CAISO</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">(California)<sup style="font-size:9px">2</sup></div>
+        </div>
+        
+        <div style="background:#0b1e30;border-radius:12px;padding:20px;text-align:center">
+          <div style="font-size:36px;font-weight:700;color:var(--accent);line-height:1">$2.3B</div>
+          <div style="font-size:13px;color:#cfe4ff;margin-top:10px;font-weight:600">ERCOT</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">(Texas)<sup style="font-size:9px">3</sup></div>
+        </div>
+        
+        <div style="background:#0b1e30;border-radius:12px;padding:20px;text-align:center">
+          <div style="font-size:36px;font-weight:700;color:var(--accent);line-height:1">$1.4B</div>
+          <div style="font-size:13px;color:#cfe4ff;margin-top:10px;font-weight:600">MISO</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">(Midwest)<sup style="font-size:9px">3</sup></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;max-width:900px;margin:0 auto">
+        <div class="callout" style="flex:1;font-size:14px;padding:16px">
+          <strong style="color:var(--gold)">+48% from 2021 to 2022<sup style="font-size:10px">1</sup></strong><br>
+          <span style="font-size:12px">Renewable variability + forecast errors</span>
+        </div>
+        <div class="callout" style="flex:1;font-size:14px;padding:16px">
+          <strong style="color:var(--gold)">2,847 hours<sup style="font-size:10px">4</sup></strong> of binding constraints in CAISO<br>
+          <span style="font-size:12px">1/3 of the year — at least one line maxed out</span>
+        </div>
+      </div>
+
+      <aside class="notes">Anchor the dollar figure first. "Twenty billion dollars annually — that's larger than the GDP of some countries." Point to the regional breakdown: "CAISO — California — $3.1B. ERCOT — Texas — $2.3B. MISO — the Midwest — $1.4B. Those three markets alone account for $6.8 billion." Then the growth stat: "This grew 48% from 2021 to 2022. Why? More renewables, more variability, harder to predict. And look at CAISO — 2,847 hours with binding constraints. That's nearly a third of the year where at least one line is maxed out." The 24-hour commitment window is where AI creates value.</aside>
+    </section>
+
+    <!-- ═══════════ SLIDE 4 — THE OPPORTUNITY ═══════════ -->
+    <section>
+      <div class="slide-tag">The Forecasting Opportunity</div>
+      <h2>24 hours of warning changes everything</h2>
+      <div style="display:flex;gap:18px;margin-top:14px;align-items:stretch">
+        <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+          <div class="callout-red">
+            <strong class="red">Without prediction:</strong> Real-time discovery. Emergency reroutes. Fast-start generators. Costs spike.
+          </div>
+          <div class="callout-green">
+            <strong class="grn">With a 24-hour forecast:</strong> Pre-position resources. Adjust schedules. Mitigate at day-ahead prices.
+          </div>
+          <div class="callout-gold">
+            <strong class="em">Goal:</strong> Flag which hours tomorrow are at risk. Estimate cost.
+          </div>
+        </div>
+        <!-- Timeline visual -->
+        <div style="flex:0 0 340px;background:#0b1e30;border-radius:13px;padding:18px">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:1.1px">Decision Timeline</div>
+          <div style="position:relative;padding-left:22px">
+            <div style="position:absolute;left:7px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--green),var(--accent))"></div>
+            <div style="margin-bottom:14px">
+              <div style="position:absolute;left:2.5px;width:9px;height:9px;border-radius:50%;background:var(--green);margin-top:3px"></div>
+              <div style="font-size:13px;color:var(--green);font-weight:600">Day-Ahead (now)</div>
+              <div style="font-size:12px;color:var(--muted)">Flags risk zones. Cheapest window. Cost: $10K–$50K.</div>
+            </div>
+            <div style="margin-bottom:14px">
+              <div style="position:absolute;left:2.5px;width:9px;height:9px;border-radius:50%;background:var(--gold);margin-top:3px"></div>
+              <div style="font-size:13px;color:var(--gold);font-weight:600">Hour-Ahead</div>
+              <div style="font-size:12px;color:var(--muted)">Partial mitigation. Limited options. Cost: $80K–$300K.</div>
+            </div>
+            <div>
+              <div style="position:absolute;left:2.5px;width:9px;height:9px;border-radius:50%;background:var(--accent);margin-top:3px"></div>
+              <div style="font-size:13px;color:var(--accent);font-weight:600">Real Time</div>
+              <div style="font-size:12px;color:var(--muted)">Emergency dispatch. Most expensive. Cost: $500K–$2M+.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">This is your "why forecasting wins" slide. The timeline on the right shows the value gradient. Say: "Earlier warning = exponentially cheaper outcomes. This is a fundamental asymmetry that AI is built to exploit."</aside>
+    </section>
+
+    <!-- ═══════════ SLIDE 5 — DATA STRATEGY ═══════════ -->
+    <section>
+      <div class="slide-tag">Data Strategy</div>
+      <h2>Grid crises don't have single causes</h2>
+      <div class="cards" style="margin-top:13px">
+        <div class="card">
+          <div class="icon">📈</div>
+          <h4>Electricity Demand</h4>
+          <div class="muted">Hourly load per zone. Largest predictor of system stress.</div>
+          <div style="margin-top:7px"><span class="badge" style="font-size:10px">Time series</span></div>
+        </div>
+        <div class="card">
+          <div class="icon">🌤️</div>
+          <h4>Weather</h4>
+          <div class="muted">Temp, wind, cloud cover. Drives demand and renewable output.</div>
+          <div style="margin-top:7px"><span class="badge" style="font-size:10px">Spatial + temporal</span></div>
+        </div>
+        <div class="card">
+          <div class="icon">⚡</div>
+          <h4>Fuel Mix</h4>
+          <div class="muted">Generation by source. Renewable swings create forecast errors.</div>
+          <div style="margin-top:7px"><span class="badge" style="font-size:10px">Market signal</span></div>
+        </div>
+        <div class="card">
+          <div class="icon">🔧</div>
+          <h4>Grid Outages</h4>
+          <div class="muted">Line and equipment failures. Removes corridor capacity.</div>
+          <div style="margin-top:7px"><span class="badge" style="font-size:10px">Topology signal</span></div>
+        </div>
+      </div>
+      <!-- Fusion diagram -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:13px;margin-top:20px">
+        <div style="text-align:center;font-size:11px;color:var(--muted)">4 data streams</div>
+        <div style="flex:0 0 110px;height:2px;background:linear-gradient(90deg,var(--brand),var(--gold))"></div>
+        <div style="background:linear-gradient(135deg,#0b3566,#1a0f30);border:1px solid var(--brand);border-radius:9px;padding:9px 18px;color:#cfe4ff;font-weight:600;font-size:13px">AI Fusion Model</div>
+        <div style="flex:0 0 110px;height:2px;background:linear-gradient(90deg,var(--gold),var(--green))"></div>
+        <div style="background:#0e2a14;border:1px solid var(--green);border-radius:9px;padding:9px 15px;color:#c8ffd4;font-weight:600;font-size:12px">Risk Score + Cost</div>
+      </div>
+      <aside class="notes">Non-technical analogy: "Think of this like a hospital triage system — it's not one test that diagnoses risk, it's the combination of vitals, history, labs, and context. Any one signal alone is too noisy. The combination is what's predictive."</aside>
+    </section>
+
+    <!-- ═══════════ SLIDE 6 — THE CHALLENGE ═══════════ -->
+    <section>
+      <div class="slide-tag">The Core Challenge</div>
+      <h2>96% of hours are fine</h2>
+      <div class="two-col" style="margin-top:13px">
+        <div style="flex:0 0 430px">
+          <div id="labelChart" class="chart" aria-label="Label distribution — long tail of large errors" style="height:230px"></div>
+          <div style="display:flex;gap:15px;margin-top:7px;font-size:11px;color:var(--muted);justify-content:center;flex-wrap:wrap">
+            <span><span class="dot" style="background:var(--brand)"></span>96% of hours — small error, no risk</span>
+            <span><span class="dot" style="background:#ffb4a2"></span>4% — large error, potential crisis</span>
+          </div>
+        </div>
+        <div style="flex:1">
+          <div class="callout-gold" style="margin-bottom:11px">
+            <strong class="em">The trap:</strong> A model that always predicts "no risk" would be 96% accurate — and worthless.
+          </div>
+          <h3>Implications:</h3>
+          <div class="card" style="margin-bottom:9px">
+            <h4>🎯 Precision over recall</h4>
+            <div class="muted">Every alert triggers action. Tune for precision on high-cost events.</div>
+          </div>
+          <div class="card">
+            <h4>💡 Cost-weighted thresholds</h4>
+            <div class="muted">$50K miss ≠ $2M miss. Alert threshold reflects expected cost.</div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">Use the fraud-detection analogy: "This is the same problem as credit card fraud — you can't flag every transaction, but you can't miss the big ones. You optimize for precision in the high-cost tail, not overall accuracy." That framing resonates with any exec.</aside>
+    </section>
+
+    <!-- ═══════════ SLIDE 7 — DUCK CURVE ═══════════ -->
+    <section>
+      <div class="slide-tag">Why Renewables Make This Harder</div>
+      <h2 style="font-size:32px;margin-bottom:15px">The duck curve</h2>
+      <div class="two-col" style="margin-top:0;gap:20px;align-items:flex-start">
+        <div style="flex:1;min-width:0">
+          <div id="duckChart" class="chart" style="height:220px" aria-label="Duck curve — 24-hour load profile"></div>
+          <div style="display:flex;gap:12px;margin-top:8px;font-size:9px;flex-wrap:wrap;justify-content:center">
+            <span><span class="dot" style="background:var(--brand)"></span>Net load (after solar)</span>
+            <span><span class="dot" style="background:var(--gold)"></span>Solar generation</span>
+            <span><span class="dot" style="background:var(--accent)"></span>⚠ Ramp risk window</span>
+          </div>
+        </div>
+        <div style="flex:0 0 260px;display:flex;flex-direction:column;gap:8px;font-size:13px">
+          <div class="callout" style="padding:8px 10px">
+            <strong>Morning (6–9am):</strong> Solar ramps up fast. Gas plants ramp <em>down</em>.
+          </div>
+          <div class="callout-gold" style="padding:8px 10px">
+            <strong class="em">Midday dip:</strong> Solar peaks. Net load is lowest — grid looks fine.
+          </div>
+          <div class="callout-red" style="padding:8px 10px">
+            <strong class="red">Evening ramp (4–8pm):</strong> Solar drops. Demand surges. Gas ramps <em>up</em> 3,000+ MW in 3 hours. <strong>Congestion.</strong>
+          </div>
+          <div class="muted" style="font-size:10px;line-height:1.4">15% solar miss during ramp → binding event.</div>
+        </div>
+      </div>
+      <aside class="notes">Great visual storytelling moment. Say: "The duck curve is California's famous grid stress pattern. The belly is solar pushing out gas, the neck is the evening sprint. This is why any model without weather and fuel data is blind to the highest-risk window of the day."</aside>
+    </section>
+
+    <!-- ═══════════ SLIDE 8 — MODEL DESIGN ═══════════ -->
+    <section>
+      <div class="slide-tag">Model Architecture</div>
+      <h2>Four encoders. One attention layer.</h2>
+      <div style="margin-top:15px">
+        <!-- Encoder row -->
+        <div class="encoder-row" id="encoderViz">
+          <div class="encoder"><div class="enc-icon">📈</div><div>Demand<br><span style="font-size:11px;color:var(--muted)">24-hr history</span></div></div>
+          <div class="encoder"><div class="enc-icon">⚡</div><div>Fuel Mix<br><span style="font-size:11px;color:var(--muted)">renewable share</span></div></div>
+          <div class="encoder"><div class="enc-icon">🌤️</div><div>Weather<br><span style="font-size:11px;color:var(--muted)">temp · wind · cloud</span></div></div>
+          <div class="encoder"><div class="enc-icon">🔧</div><div>Outages<br><span style="font-size:11px;color:var(--muted)">line/equip status</span></div></div>
+        </div>
+        <!-- Attention fusion -->
+        <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin:13px 0">
+          <div style="flex:1;height:2px;background:linear-gradient(90deg,transparent,var(--brand))"></div>
+          <div class="attn-block">Cross-Attention<br><span style="font-size:11px;font-weight:400;opacity:0.88">Dynamically weights which signal matters most <em>this hour</em></span></div>
+          <div style="flex:1;height:2px;background:linear-gradient(90deg,var(--accent),transparent)"></div>
+        </div>
+        <div style="display:flex;justify-content:center">
+          <div class="out-block">✅ Risk Score + Expected Cost → Operator Alert</div>
+        </div>
+        <div style="margin-top:15px;display:flex;gap:11px;flex-wrap:wrap;justify-content:center">
+          <div class="callout" style="flex:1;min-width:210px;padding:9px 13px;font-size:12px">
+            <strong>Why separate encoders?</strong> Different signals matter on different days. Calm day → demand dominates. Windstorm + outages → topology and weather dominate. Cross-attention shifts focus automatically.
+          </div>
+          <div class="callout-gold" style="flex:1;min-width:210px;padding:9px 13px;font-size:12px">
+            <strong class="em">Analogy:</strong> Four advisors. One chairperson. The chairperson decides whose advice matters <em>this hour</em>.
+          </div>
+        </div>
+      </div>
+      <aside class="notes">Pause on the analogy: "Four advisors. One chairperson. The chairperson reads the room and decides who to trust each hour. That's cross-attention. It's why this architecture outperforms a single blended model — it's context-sensitive, not context-blind."</aside>
+    </section>
+
+    <!-- ═══════════ SLIDE 9 — BASELINE BENCHMARK ═══════════ -->
+    <section>
+      <div class="slide-tag">Benchmarking</div>
+      <h2>Start simple — then beat it</h2>
+      <div class="two-col" style="margin-top:13px">
+        <div style="flex:1">
+          <div class="callout-gold" style="margin-bottom:13px">
+            <strong class="em">First principle:</strong> Never evaluate without a baseline. "80% accurate" means nothing.
+          </div>
+          <!-- Baseline comparison -->
+          <div style="background:#0b1e30;border-radius:12px;padding:15px;margin-top:8px">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:11px;text-transform:uppercase;letter-spacing:1px">Illustrative Model Comparison — Error on High-Cost Events</div>
+            <div style="margin-bottom:9px">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#9fbddf;margin-bottom:2px"><span>Naive guess (no model)</span><span>Worst</span></div>
+              <div class="prog-bar"><div class="prog-fill" style="width:88%;background:#444"></div></div>
+            </div>
+            <div style="margin-bottom:9px">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#9fbddf;margin-bottom:2px"><span>Persistence ("same as yesterday")</span><span>Strong</span></div>
+              <div class="prog-bar"><div class="prog-fill" style="width:60%;background:var(--brand)"></div></div>
+            </div>
+            <div style="margin-bottom:9px">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#9fbddf;margin-bottom:2px"><span>Random Forest (structured features)</span><span>Better</span></div>
+              <div class="prog-bar"><div class="prog-fill" style="width:43%;background:var(--gold)"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--green);margin-bottom:2px"><span><strong>Cross-Attention LSTM (multi-modal)</strong></span><span>Best</span></div>
+              <div class="prog-bar"><div class="prog-fill" style="width:27%;background:var(--green)"></div></div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:7px">Lower bar = lower forecast error. Bars are illustrative — directional only.</div>
+          </div>
+        </div>
+        <div style="flex:0 0 290px;display:flex;flex-direction:column;gap:11px">
+          <h3>The ladder of models:</h3>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <div class="callout" style="padding:9px 12px;font-size:12px">
+              <strong>Step 1:</strong> Persistence — "tomorrow = today"<br><span class="muted" style="font-size:11px">Hard to beat. Sets the floor.</span>
+            </div>
+            <div style="text-align:center;color:var(--brand);font-size:18px">↓</div>
+            <div class="callout" style="padding:9px 12px;font-size:12px">
+              <strong>Step 2:</strong> Random Forest on hand-crafted features<br><span class="muted" style="font-size:11px">Improves on high-stress hours.</span>
+            </div>
+            <div style="text-align:center;color:var(--brand);font-size:18px">↓</div>
+            <div class="callout-green" style="padding:9px 12px;font-size:12px">
+              <strong style="color:var(--green)">Step 3:</strong> Cross-Attention LSTM<br><span class="muted" style="font-size:11px">Captures temporal patterns + multi-source context.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">Say: "I always build the baseline first — not because it's going to win, but because it calibrates the conversation. If my fancy model only beats persistence by 2%, that's a story about data quality, not model architecture. In this case, we see meaningful improvements, especially on the costly tail events."</aside>
+    </section>
+
+    <!-- ═══════════ SLIDE 10 — DATA ENGINEERING CHALLENGES ═══════════ -->
+    <section>
+      <div class="slide-tag">Data Engineering</div>
+      <h2>Outage compression</h2>
+      <div class="two-col" style="margin-top:15px;gap:25px">
+        <div style="flex:1">
+          <div class="callout-red" style="margin-bottom:15px">
+            <strong class="red">The problem:</strong> 2,000–5,000+ outage events per region. Each is a binary time series across 8,760 hours. <strong>~100M+ states</strong> before modeling starts.
+          </div>
+          
+          <h3 style="font-size:16px;margin-bottom:10px">Sparsity characteristics:</h3>
+          <div style="background:#071426;border-radius:9px;padding:12px;margin-bottom:15px">
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:8px 12px;font-size:12px;align-items:baseline">
+              <div style="color:var(--gold);font-weight:600">99.7%</div>
+              <div>of hours have <strong>zero</strong> unplanned outages</div>
+              <div style="color:var(--gold);font-weight:600">0.3%</div>
+              <div>of hours drive 80%+ of congestion costs</div>
+              <div style="color:var(--gold);font-weight:600">~50–200</div>
+              <div>transmission lines are "critical" (contribute to binding)</div>
+            </div>
+          </div>
+
+          <div class="callout-gold">
+            <strong class="em">Insight:</strong> Raw outage tensors → noise memorization. <strong>Compression mandatory.</strong>
+          </div>
+        </div>
+
+        <div style="flex:1">
+          <h3 style="font-size:16px;margin-bottom:10px">Encoding strategy:</h3>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+            <div class="callout" style="padding:10px 12px;font-size:12px">
+              <strong>1. Zone aggregation</strong><br>
+              <span class="muted" style="font-size:11px">Thousands of lines → ~20–50 zones</span>
+            </div>
+            <div class="callout" style="padding:10px 12px;font-size:12px">
+              <strong>2. Criticality weighting</strong><br>
+              <span class="muted" style="font-size:11px">Weight by historical impact (from PTDF matrices)</span>
+            </div>
+            <div class="callout" style="padding:10px 12px;font-size:12px">
+              <strong>3. Temporal embedding</strong><br>
+              <span class="muted" style="font-size:11px">Encode: scheduled vs. unplanned, duration, recurrence</span>
+            </div>
+          </div>
+
+          <h3 style="font-size:16px;margin-bottom:10px">Loss function design:</h3>
+          <div class="callout-green" style="font-size:12px;padding:10px 12px">
+            <strong style="color:var(--green)">Asymmetric cost-weighted loss</strong><br>
+            <span class="muted" style="font-size:11px;line-height:1.5;display:block;margin-top:4px">
+              Missed high-cost events penalized 10–20× more than false alarms.
+            </span>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:8px;font-style:italic">
+            Loss = Σ (cost<sub>i</sub> × error<sub>i</sub>)
+          </div>
+        </div>
+      </div>
+      <aside class="notes">This is the "how did you make it work?" slide. Say: "When you have thousands of potential outages and 99.7% sparsity, you can't just throw everything into a neural net. We compress by zone aggregation, weight by criticality using power transfer distribution factors, and embed temporal patterns. On the loss side, we don't use vanilla cross-entropy — we use a cost-weighted loss that explicitly penalizes the model more for missing expensive events than for crying wolf on cheap ones. This is forecasting engineering, not just model tuning."</aside>
+    </section>
+
+    <!-- ═══════════ SLIDE 11 — COST OF ERRORS ═══════════ -->
+    <section>
+      <div class="slide-tag">Measurement</div>
+      <h2>Not all mistakes are equal</h2>
+      <div class="two-col" style="margin-top:13px">
+        <div style="flex:1">
+          <!-- Visual scale -->
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Business cost of each error type:</div>
+          <div class="scale" style="margin:10px 0">
+            <div class="scale-fp" style="flex:1.2">
+              <div>
+                <div style="font-size:19px">⚠️ False Alarm</div>
+                <div style="font-size:11px;margin-top:3px">Unnecessary reroute<br><strong>$10K–$100K</strong></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;padding:0 7px;background:#0c1928;font-size:18px">⚖️</div>
+            <div class="scale-fn" style="flex:2">
+              <div>
+                <div style="font-size:19px">🚨 Missed Event</div>
+                <div style="font-size:11px;margin-top:3px">Emergency redispatch + reliability risk<br><strong>$200K–$2M+</strong></div>
+              </div>
+            </div>
+          </div>
+          <div class="callout" style="margin-top:13px;font-size:13px">
+            <strong>Threshold tuning:</strong> Missing a large event costs 10–20× more than a false alarm. Model is conservative on high-magnitude hours.
+          </div>
+        </div>
+        <div style="flex:0 0 310px">
+          <div id="costErrorChart" class="chart" style="height:250px" aria-label="Cost comparison — false alarm vs missed event"></div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;text-align:center">Illustrative: cost by error type and event size. Based on Grid Strategies 2023 data.</div>
+        </div>
+      </div>
+      <aside class="notes">Say: "This is actually a well-known problem in medical AI — a missed cancer is far worse than a false biopsy. We applied the same principle: tune the operating threshold to reflect the real cost of being wrong in each direction. That's a forecasting science discipline, not just a model choice."</aside>
+    </section>
+
+    <!-- ═══════════ SLIDE 12 — INTERACTIVE DEMO ═══════════ -->
+    <section>
+      <div class="slide-tag">Interactive Demo</div>
+      <h2>What would you do?</h2>
+      <div style="margin-top:20px;display:flex;gap:25px">
+        
+        <!-- LEFT: Your Choice -->
+        <div style="flex:1;background:#071426;border-radius:12px;padding:18px">
+          <div style="font-size:14px;color:var(--gold);font-weight:600;margin-bottom:15px">You're the operator. Choose:</div>
+          
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px">
+            <label style="display:flex;align-items:center;gap:10px;font-size:14px;color:#cfe4ff;cursor:pointer;padding:12px;background:#0b1e30;border-radius:8px;border:2px solid transparent;transition:all 0.2s" onmouseover="this.style.borderColor='#e05c3a'" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='transparent'">
+              <input type="radio" name="stratChoice" value="ignore" checked onchange="updateStrategyOutcome()" style="accent-color:var(--accent);width:18px;height:18px">
+              <span>❌ <strong>Ignore the forecast</strong><br><span style="font-size:11px;color:var(--muted);margin-left:28px">Proceed with cheap baseline strategy</span></span>
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;font-size:14px;color:#cfe4ff;cursor:pointer;padding:12px;background:#0b1e30;border-radius:8px;border:2px solid transparent;transition:all 0.2s" onmouseover="this.style.borderColor='#4ecf8e'" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='transparent'">
+              <input type="radio" name="stratChoice" value="mitigate" onchange="updateStrategyOutcome()" style="accent-color:var(--green);width:18px;height:18px">
+              <span>✅ <strong>Act on the forecast</strong><br><span style="font-size:11px;color:var(--muted);margin-left:28px">Add 180 MW flexible capacity ($75K)</span></span>
+            </label>
+          </div>
+
+          <!-- OUTCOME BOX -->
+          <div style="background:#2d1a0a;border-radius:10px;padding:4px">
+            <div style="background:linear-gradient(135deg, #1a0e0e 0%, #0e0a08 100%);border-radius:8px;padding:16px">
+              <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">⏰ Tomorrow at 5:00 PM</div>
+              <div id="stratOutcome" style="padding:14px;background:#2d1515;border:2px solid #e05c3a;border-radius:8px">
+                <div style="font-size:12px;color:#ff9580;font-weight:600;margin-bottom:6px">What happens:</div>
+                <div style="font-size:12px;color:#cfe4ff;line-height:1.6;margin-bottom:10px">Solar output drops 15% below forecast → Zone Z-14 transmission line hits capacity → Emergency redispatch required</div>
+                <div style="font-size:36px;font-weight:700;color:#ff9580">$1,300,000</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:2px">Total cost</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: What Drove The Forecast -->
+        <div style="flex:0 0 400px;background:#071426;border-radius:12px;padding:18px">
+          <div style="font-size:14px;color:var(--gold);font-weight:600;margin-bottom:15px">What triggered this alert?</div>
+          
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px">
+            <div style="padding:12px;background:#0b1e30;border-radius:8px;border-left:4px solid var(--gold)">
+              <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:3px">☀️ Solar Forecast</div>
+              <div style="font-size:11px;color:#cfe4ff;line-height:1.5">320 MW expected at 5pm<br><span style="color:var(--muted)">Peak hour coincides with evening ramp</span></div>
+            </div>
+            <div style="padding:12px;background:#0b1e30;border-radius:8px;border-left:4px solid var(--gold)">
+              <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:3px">📈 Load Forecast</div>
+              <div style="font-size:11px;color:#cfe4ff;line-height:1.5">1,850 MW peak demand<br><span style="color:var(--muted)">Typical summer evening spike</span></div>
+            </div>
+            <div style="padding:12px;background:#0b1e30;border-radius:8px;border-left:4px solid var(--gold)">
+              <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:3px">🔧 Scheduled Outages</div>
+              <div style="font-size:11px;color:#cfe4ff;line-height:1.5">2 maintenance events in Z-11<br><span style="color:var(--muted)">Reduces available transmission paths</span></div>
+            </div>
+            <div style="padding:12px;background:#0b1e30;border-radius:8px;border-left:4px solid var(--gold)">
+              <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:3px">⚡ Market Prices</div>
+              <div style="font-size:11px;color:#cfe4ff;line-height:1.5">High gas prices<br><span style="color:var(--muted)">Generators favor distant zones → flow stress</span></div>
+            </div>
+          </div>
+
+          <div style="padding:13px;background:#0a1d12;border-radius:8px;border:1px solid #1a3a2a">
+            <div style="font-size:11px;color:#4ecf8e;font-weight:600;margin-bottom:4px">🧠 Multi-Modal Fusion</div>
+            <div style="font-size:10px;color:var(--muted);line-height:1.5">Cross-attention weighted all four streams → <strong style="color:#cfe4ff">84% binding probability</strong> for Zone Z-14 at 5-7pm</div>
+          </div>
+        </div>
+
+      </div>
+      <aside class="notes">This is your interactive demo slide. Say: "Now let's make this tangible. You're the operator. The model has given you an alert. What do you do?" Point to the two choices: "Option 1: Ignore it. Maybe you don't trust the model, maybe you're cost-conscious. Option 2: Act on it. Add the flexible capacity for $75K." Let them click one: "Watch what happens. Ignore it — tomorrow at 5pm, solar drops, Zone Z-14 binds, $1.3 million. Act on it — same solar drop, but your flexible unit absorbs the ramp, $75K total. That's the choice the model enables." Walk through the right side: "What drove this forecast? Four data streams." Point to each: "Solar at 320 MW during peak ramp hour. Load forecast at 1,850 MW. Two scheduled outages in Zone Z-11 reducing paths. High gas prices creating flow stress. The cross-attention mechanism fused all four to predict 84% binding probability. That's multi-modal forecasting in action."</aside>
+    </section>
+
+    <!-- ═══════════ SLIDE 13 — THE IMPACT ═══════════ -->
+    <section>
+      <div class="slide-tag">Day-Ahead Operator Value</div>
+      <h2>Tuesday 10am: tomorrow will be expensive</h2>
+      <div style="margin-top:20px">
+        
+        <!-- THE ALERT -->
+        <div style="background:linear-gradient(135deg, #0e2d1a 0%, #071d26 100%);border:2px solid #4ecf8e;border-radius:12px;padding:18px;margin-bottom:25px;max-width:900px;margin-left:auto;margin-right:auto">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:15px">
+            <div style="font-size:28px">🚨</div>
+            <div>
+              <div style="font-size:17px;font-weight:700;color:#4ecf8e">CONGESTION RISK ALERT — Tomorrow 5:00-7:00 PM</div>
+              <div style="font-size:12px;color:var(--muted)">Zone Z-14 North | Binding probability: <strong style="color:#ff9580">84%</strong> | Estimated cost if unmitigated: <strong style="color:#ff9580">$950K–$1.4M</strong></div>
+            </div>
+          </div>
+          <div style="padding:13px;background:#0a1d12;border-left:3px solid #4ecf8e;border-radius:6px">
+            <div style="font-size:12px;color:#4ecf8e;font-weight:600;margin-bottom:5px">📋 MODEL RECOMMENDATION:</div>
+            <div style="font-size:13px;color:#cfe4ff;line-height:1.6">Pre-commit <strong style="color:#4ecf8e">180 MW flexible capacity</strong> in Zone Z-12. Cost: <strong style="color:#ffd27f">$75K</strong></div>
+          </div>
+        </div>
+
+        <!-- THE CHOICE -->
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:25px;align-items:center;max-width:1000px;margin:0 auto">
+          
+          <!-- WITHOUT -->
+          <div style="text-align:center">
+            <div style="background:#2d1515;border:3px solid #e05c3a;border-radius:12px;padding:20px">
+              <div style="font-size:18px;margin-bottom:8px">❌</div>
+              <div style="font-size:15px;font-weight:700;color:#ff9580;margin-bottom:10px">Ignore the alert</div>
+              <div style="font-size:12px;color:#cfe4ff;line-height:1.5;margin-bottom:12px">Proceed with low-cost strategy<br>(baseload + renewables)</div>
+              <div style="padding:10px;background:#1a0e0e;border-radius:6px">
+                <div style="font-size:11px;color:#ff9580;margin-bottom:4px">Tomorrow 5pm:</div>
+                <div style="font-size:12px;color:#cfe4ff">Solar drops → Z-14 binds</div>
+                <div style="font-size:32px;font-weight:700;color:#ff9580;margin-top:8px">$1.3M</div>
+                <div style="font-size:10px;color:var(--muted)">Emergency cost</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- VS -->
+          <div style="font-size:36px;color:var(--muted);font-weight:300">vs</div>
+
+          <!-- WITH -->
+          <div style="text-align:center">
+            <div style="background:#0e2d1a;border:3px solid #4ecf8e;border-radius:12px;padding:20px">
+              <div style="font-size:18px;margin-bottom:8px">✅</div>
+              <div style="font-size:15px;font-weight:700;color:#4ecf8e;margin-bottom:10px">Act on the alert</div>
+              <div style="font-size:12px;color:#cfe4ff;line-height:1.5;margin-bottom:12px">Add 180 MW flexible<br>capacity in Zone Z-12</div>
+              <div style="padding:10px;background:#0a1d12;border-radius:6px">
+                <div style="font-size:11px;color:#4ecf8e;margin-bottom:4px">Tomorrow 5pm:</div>
+                <div style="font-size:12px;color:#cfe4ff">Solar drops → Flex unit absorbs</div>
+                <div style="font-size:32px;font-weight:700;color:#4ecf8e;margin-top:8px">$75K</div>
+                <div style="font-size:10px;color:var(--muted)">Total cost</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- THE IMPACT -->
+        <div style="margin-top:25px;text-align:center">
+          <div style="display:inline-block;padding:15px 30px;background:linear-gradient(135deg, #2d1a0a 0%, #1a0e0e 50%, #0a1d12 100%);border-radius:10px">
+            <div style="font-size:13px;color:var(--muted);margin-bottom:6px">One decision. One alert. One day.</div>
+            <div style="font-size:48px;font-weight:700;color:var(--gold)">$1.225M saved</div>
+            <div style="font-size:14px;color:var(--muted);margin-top:4px">94% cost reduction from a 24-hour forecast</div>
+          </div>
+        </div>
+
+      </div>
+      <aside class="notes">This is the core value slide. Say: "It's Tuesday morning at 10am. You're planning tomorrow. The model sends an alert: Zone Z-14, 84% probability of binding tomorrow 5-7pm, estimated cost $950K to $1.4M if you do nothing. Recommendation: add 180 MW flexible capacity in Zone Z-12 for $75K." Point to the two paths: "LEFT: Ignore it. Proceed with your cheap strategy. Tomorrow at 5pm, solar drops, Zone Z-14 binds, you pay $1.3 million in emergency costs. RIGHT: Act on it. Add the flexible unit. Tomorrow at 5pm, same solar drop, but your unit absorbs the ramp. Total cost: $75K." Point to the bottom: "One decision. One alert. One day. $1.225 million saved. That's a 94% cost reduction from having a 24-hour forecast window. Multiply that across 365 days and dozens of zones — that's the value proposition."</aside>
+    </section>
+
+    <!-- ═══════════ SLIDE 14 — CITATIONS ═══════════ -->
+    <section>
+      <div class="slide-tag">References</div>
+      <h2>Citations</h2>
+      <div style="max-width:900px;margin:20px auto;text-align:left">
+        <div style="font-size:13px;line-height:1.8;color:#cfe4ff">
+          <p style="margin-bottom:12px">
+            <strong style="color:var(--gold)">[1]</strong> Grid Strategies LLC. (2023). <em>2022 Congestion Report: Managing the Growing Complexity of the U.S. Grid.</em> Retrieved from <a href="https://gridstrategiesllc.com/congestion-reports/" target="_blank" style="color:var(--brand);text-decoration:none">gridstrategiesllc.com/congestion-reports</a>
+          </p>
+          <p style="margin-bottom:12px">
+            <strong style="color:var(--gold)">[2]</strong> Federal Energy Regulatory Commission. (2023). <em>2022 State of the Markets Report.</em> Office of Energy Market Regulation. Available at <a href="https://www.ferc.gov/news-events/news/ferc-staff-releases-2022-state-markets-report" target="_blank" style="color:var(--brand);text-decoration:none">ferc.gov/state-of-markets</a>
+          </p>
+          <p style="margin-bottom:12px">
+            <strong style="color:var(--gold)">[3]</strong> Potomac Economics. (2023). <em>2022 State of the Market Report for the ERCOT Wholesale Electricity Markets</em> and <em>2022 State of the Market Report for the MISO Electricity Markets.</em> Independent Market Monitor reports. Retrieved from <a href="https://www.potomaceconomics.com/market-monitoring/reports/" target="_blank" style="color:var(--brand);text-decoration:none">potomaceconomics.com</a>
+          </p>
+          <p style="margin-bottom:12px">
+            <strong style="color:var(--gold)">[4]</strong> California Independent System Operator (CAISO). (2023). <em>2022 Annual Report on Market Issues and Performance.</em> Department of Market Monitoring. Available at <a href="https://www.caiso.com/market/Pages/ReportsBulletins/Default.aspx" target="_blank" style="color:var(--brand);text-decoration:none">caiso.com/market-reports</a>
+          </p>
+        </div>
+      </div>
+      <aside class="notes">This slide provides full citations for all market data and statistics referenced in the presentation. These are authoritative sources: Grid Strategies tracks national congestion trends, FERC is the federal regulator, Potomac Economics serves as independent market monitor for multiple ISOs, and CAISO publishes detailed operational data. All reports are publicly available.</aside>
+    </section>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({ hash: true, transition: 'fade', backgroundTransition: 'fade', plugins: [] });
+</script>
+<script>
+  // ═══════════════════════════════════════════════════════════════════════
+  // ─── Shared SVG helpers ──────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  const NS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs){
+    const el = document.createElementNS(NS, tag);
+    Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v));
+    return el;
+  }
+  function makeSVG(w,h){ return svgEl('svg',{width:w,height:h,viewBox:`0 0 ${w} ${h}`}); }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ─── Seeded PRNG (Mulberry32) for reproducible, non-random charts ────────
+  // ═══════════════════════════════════════════════════════════════════════
+  function seededRand(seed){
+    let s = seed >>> 0;
+    return function(){
+      s += 0x6d2b79f5;
+      let t = s;
+      t = Math.imul(t ^ t >>> 15, t | 1);
+      t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ─── Histogram (label distribution — long-tail) ──────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  function renderHistogram(container, opts){
+    const W = opts.width || 430, H = opts.height || 230;
+    const svg = makeSVG(W, H);
+    const rng = seededRand(42);
+    const data = [];
+    // 96% small errors, 4% large tail
+    for(let i=0; i<920; i++) data.push(Math.abs(Math.pow(rng(), 2.2) * 120));
+    for(let i=0; i<38; i++) data.push(180 + rng() * 1400);
+    const bins = 38; const b = new Array(bins).fill(0);
+    const maxV = Math.max(...data);
+    data.forEach(v => { const idx = Math.min(bins-1, Math.floor(v/maxV*bins)); b[idx]++; });
+    const pad = 34; const gw = W - pad*2; const gh = H - pad*1.6;
+    const maxC = Math.max(...b);
+    b.forEach((cnt, i) => {
+      const x = pad + (i * (gw/bins)); const w = Math.max(1, gw/bins - 2);
+      const h = (cnt / maxC) * gh; const y = pad + (gh - h);
+      const rect = svgEl('rect', {x, y, width:w, height:h, fill: i > bins*0.85 ? '#ffb4a2' : '#2e6494', rx:2});
+      svg.appendChild(rect);
+    });
+    // threshold line
+    const tx = pad + (0.87 * gw);
+    svg.appendChild(svgEl('line', {x1:tx, y1:pad, x2:tx, y2:pad+gh, stroke:'#ffd27f', 'stroke-width':2, 'stroke-dasharray':'4 3'}));
+    const tLabel = svgEl('text', {x:tx+4, y:pad+13, fill:'#ffd27f', 'font-size':10});
+    tLabel.textContent = 'Alert threshold';
+    svg.appendChild(tLabel);
+    // axis
+    svg.appendChild(svgEl('line', {x1:pad, y1:pad+gh, x2:W-pad, y2:pad+gh, stroke:'#2a4a6a'}));
+    const xLabel = svgEl('text', {x:pad, y:H-5, fill:'#7a96ad', 'font-size':10});
+    xLabel.textContent = 'Forecast error →';
+    svg.appendChild(xLabel);
+    const yLabel = svgEl('text', {x:4, y:pad+gh/2, fill:'#7a96ad', 'font-size':10, transform:`rotate(-90,10,${pad+gh/2})`});
+    yLabel.textContent = '# hours';
+    svg.appendChild(yLabel);
+    container.innerHTML = ''; container.appendChild(svg);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ─── Time series with residual spikes ────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  function renderSeries(container, opts){
+    const W = opts.width || 760, H = opts.height || 190;
+    const svg = makeSVG(W, H);
+    const n = 168; // 1 week
+    const rng = seededRand(7);
+    const data = [];
+    for(let i=0; i<n; i++){
+      const base = 240 + 80*Math.sin(i/24 * Math.PI*2) + 35*Math.sin(i/12 * Math.PI);
+      data.push(base + (rng()-0.5)*10);
+    }
+    const residual = new Array(n).fill(0);
+    // fixed spike positions
+    [18, 41, 67, 92, 113, 140, 158].forEach((idx, j) => { residual[idx] = 80 + j*60; });
+    const pad = 30; const gw = W - pad*2; const gh = H - pad*1.8;
+    const maxY = 350;
+    const scX = i => pad + (i/(n-1)) * gw;
+    const scY = v => pad + gh - (v/maxY) * gh;
+    // area under demand
+    let area = `M ${scX(0)} ${scY(data[0])}`;
+    data.forEach((_, i) => { area += ` L ${scX(i)} ${scY(data[i])}`; });
+    area += ` L ${scX(n-1)} ${pad+gh} L ${scX(0)} ${pad+gh} Z`;
+    svg.appendChild(svgEl('path', {d:area, fill:'#0b2d4a', opacity:'0.6'}));
+    // demand line
+    let dpath = `M ${scX(0)} ${scY(data[0])}`;
+    data.forEach((_, i) => { dpath += ` L ${scX(i)} ${scY(data[i])}`; });
+    svg.appendChild(svgEl('path', {d:dpath, stroke:'#4fb0ff', 'stroke-width':2, fill:'none'}));
+    // alert threshold line
+    const tLevel = 240;
+    svg.appendChild(svgEl('line', {x1:pad, y1:scY(tLevel), x2:W-pad, y2:scY(tLevel), stroke:'#ffd27f', 'stroke-width':1.5, 'stroke-dasharray':'6 4'}));
+    const thLabel = svgEl('text', {x:W-pad-58, y:scY(tLevel)-4, fill:'#ffd27f', 'font-size':9});
+    thLabel.textContent = 'alert threshold';
+    svg.appendChild(thLabel);
+    // residual spikes
+    residual.forEach((v, i) => {
+      if(v > 0){
+        svg.appendChild(svgEl('line', {x1:scX(i), y1:scY(data[i]), x2:scX(i), y2:scY(data[i]+v), stroke:'#ff6b6b', 'stroke-width':2.5, 'stroke-linecap':'round'}));
+        svg.appendChild(svgEl('circle', {cx:scX(i), cy:scY(data[i]+v), r:4, fill:'#ff6b6b'}));
+      }
+    });
+    // x-axis day labels
+    ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach((d, i) => {
+      const lx = pad + (i*24/(n-1)) * gw;
+      const dayLabel = svgEl('text', {x:lx, y:H-3, fill:'#4a6a8a', 'font-size':8});
+      dayLabel.textContent = d;
+      svg.appendChild(dayLabel);
+    });
+    container.innerHTML = ''; container.appendChild(svg);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ─── Duck curve (24-hour load profile) ───────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  function renderDuck(container){
+    const W = container.offsetWidth || 700, H = 270;
+    const svg = makeSVG(W, H);
+    const n = 24; const pad = 38;
+    const gw = W - pad*2; const gh = H - pad*1.8;
+    // fixed duck curve data
+    const netLoad = [510,490,475,470,468,465,460,445,420,390,360,325,310,305,320,350,400,460,520,560,575,565,545,525];
+    const solar = [0,0,0,0,0,5,22,55,95,138,170,188,192,185,165,130,88,42,8,0,0,0,0,0];
+    const maxY = 620;
+    const scX = i => pad + (i/(n-1)) * gw;
+    const scY = v => pad + gh - (v/maxY) * gh;
+    // ramp risk highlight
+    const rampX = scX(16); const rampW = scX(20) - rampX;
+    svg.appendChild(svgEl('rect', {x:rampX, y:pad, width:rampW, height:gh, fill:'#3a0e0a', opacity:0.8}));
+    const rampLabel = svgEl('text', {x:rampX+4, y:pad+13, fill:'#ff9580', 'font-size':10, 'font-weight':'600'});
+    rampLabel.textContent = '⚠ Ramp risk';
+    svg.appendChild(rampLabel);
+    // solar area
+    let solarArea = `M ${scX(0)} ${scY(0)}`;
+    solar.forEach((_, i) => { solarArea += ` L ${scX(i)} ${scY(solar[i])}`; });
+    solarArea += ` L ${scX(n-1)} ${scY(0)} Z`;
+    svg.appendChild(svgEl('path', {d:solarArea, fill:'#3a2a00', opacity:0.8}));
+    let solarPath = `M ${scX(0)} ${scY(solar[0])}`;
+    solar.forEach((_, i) => { solarPath += ` L ${scX(i)} ${scY(solar[i])}`; });
+    svg.appendChild(svgEl('path', {d:solarPath, stroke:'#ffd27f', 'stroke-width':1.5, fill:'none', 'stroke-dasharray':'4 3'}));
+    // net load area
+    let area = `M ${scX(0)} ${scY(netLoad[0])}`;
+    netLoad.forEach((_, i) => { area += ` L ${scX(i)} ${scY(netLoad[i])}`; });
+    area += ` L ${scX(n-1)} ${pad+gh} L ${scX(0)} ${pad+gh} Z`;
+    svg.appendChild(svgEl('path', {d:area, fill:'#0a2a40', opacity:0.7}));
+    // net load line
+    let npath = `M ${scX(0)} ${scY(netLoad[0])}`;
+    netLoad.forEach((_, i) => { npath += ` L ${scX(i)} ${scY(netLoad[i])}`; });
+    svg.appendChild(svgEl('path', {d:npath, stroke:'#4fb0ff', 'stroke-width':2.5, fill:'none'}));
+    // hour labels
+    [0, 6, 12, 18, 23].forEach(h => {
+      const hLabel = svgEl('text', {x:scX(h), y:H-3, fill:'#4a6a8a', 'font-size':8, 'text-anchor':'middle'});
+      hLabel.textContent = `${h}:00`;
+      svg.appendChild(hLabel);
+    });
+    // annotations
+    const midX = scX(12);
+    const midLabel = svgEl('text', {x:midX-27, y:scY(netLoad[12])-9, fill:'#9fbddf', 'font-size':9});
+    midLabel.textContent = 'Solar peak — midday dip';
+    svg.appendChild(midLabel);
+    const eveLabel = svgEl('text', {x:scX(19), y:scY(netLoad[19])-11, fill:'#ff9580', 'font-size':9});
+    eveLabel.textContent = 'Evening surge';
+    svg.appendChild(eveLabel);
+    container.innerHTML = ''; container.appendChild(svg);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ─── Cost error bar chart ────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  function renderCostBars(container){
+    const W = 310, H = 250;
+    const svg = makeSVG(W, H);
+    const pad = 38;
+    const bars = [
+      {label:['Small','False Alarm'], val:50, maxVal:2000, color:'#2e6494'},
+      {label:['Large','False Alarm'], val:100, maxVal:2000, color:'#2e6494'},
+      {label:['Small','Missed'], val:250, maxVal:2000, color:'#8b3a1a'},
+      {label:['Large','Missed'], val:1600, maxVal:2000, color:'#d9534f'},
+    ];
+    const gw = W - pad*2; const gh = H - pad*2 - 18;
+    bars.forEach((b, i) => {
+      const bw = (gw / bars.length) - 7;
+      const x = pad + i*(gw/bars.length) + 3.5;
+      const bh = (b.val / b.maxVal) * gh;
+      const y = pad + gh - bh;
+      svg.appendChild(svgEl('rect', {x, y, width:bw, height:bh, fill:b.color, rx:3}));
+      // value label
+      const valLabel = svgEl('text', {x:x+bw/2, y:y-5, fill:'#cfe4ff', 'font-size':9, 'text-anchor':'middle'});
+      valLabel.textContent = '$' + b.val + 'K';
+      svg.appendChild(valLabel);
+      // x label (multi-line)
+      b.label.forEach((line, li) => {
+        const xLabel = svgEl('text', {x:x+bw/2, y:H-7+li*12, fill:'#7a96ad', 'font-size':8, 'text-anchor':'middle'});
+        xLabel.textContent = line;
+        svg.appendChild(xLabel);
+      });
+    });
+    // axis
+    svg.appendChild(svgEl('line', {x1:pad, y1:pad+gh, x2:W-pad, y2:pad+gh, stroke:'#2a4a6a'}));
+    const yLabel = svgEl('text', {x:4, y:pad+gh/2, fill:'#7a96ad', 'font-size':9, transform:`rotate(-90,12,${pad+gh/2})`});
+    yLabel.textContent = 'Cost ($K)';
+    svg.appendChild(yLabel);
+    container.innerHTML = ''; container.appendChild(svg);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ─── Cost Distribution Chart (where value comes from) ────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  function renderCostDist(container){
+    const W = container.offsetWidth || 450, H = 180;
+    const svg = makeSVG(W, H);
+    const pad = 35;
+    // Data: event categories by size and savings
+    const categories = [
+      {label: 'High-impact\n($500K+)', value: 78, color: '#e05c3a'},
+      {label: 'Medium\n($100-500K)', value: 15, color: '#0b6fbf'},
+      {label: 'Small\n($50-100K)', value: 7, color: '#ffd27f'}
+    ];
+    const total = categories.reduce((sum, c) => sum + c.value, 0);
+    const gw = W - pad*2; const gh = H - pad*2 - 15;
+    
+    let currentX = pad;
+    categories.forEach((cat, i) => {
+      const barWidth = (cat.value / total) * gw;
+      const x = currentX;
+      const y = pad + gh/3;
+      const bh = gh/2.5;
+      
+      // Bar
+      svg.appendChild(svgEl('rect', {
+        x, y, 
+        width: barWidth, 
+        height: bh, 
+        fill: cat.color, 
+        rx: 2
+      }));
+      
+      // Percentage label (inside bar if wide enough)
+      if(barWidth > 50){
+        const pctLabel = svgEl('text', {
+          x: x + barWidth/2, 
+          y: y + bh/2 + 4, 
+          fill: '#fff', 
+          'font-size': 15, 
+          'font-weight': '700',
+          'text-anchor': 'middle'
+        });
+        pctLabel.textContent = cat.value + '%';
+        svg.appendChild(pctLabel);
+      }
+      
+      // Category label below
+      const lines = cat.label.split('\n');
+      lines.forEach((line, li) => {
+        const xLabel = svgEl('text', {
+          x: x + barWidth/2, 
+          y: y + bh + 12 + li*11, 
+          fill: '#7a96ad', 
+          'font-size': 9, 
+          'text-anchor': 'middle'
+        });
+        xLabel.textContent = line;
+        svg.appendChild(xLabel);
+      });
+      
+      currentX += barWidth;
+    });
+    
+    // Title
+    const titleLabel = svgEl('text', {
+      x: W/2, 
+      y: pad/2 + 3, 
+      fill: '#cfe4ff', 
+      'font-size': 11, 
+      'font-weight': '600',
+      'text-anchor': 'middle'
+    });
+    titleLabel.textContent = '% of Total Savings by Event Size';
+    svg.appendChild(titleLabel);
+    
+    container.innerHTML = ''; container.appendChild(svg);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ─── Render all charts ───────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  function renderAll(){
+    const c1 = document.getElementById('labelChart');
+    if(c1) renderHistogram(c1, {width: c1.offsetWidth || 430, height: 230});
+    
+    const c2 = document.getElementById('seriesChart');
+    if(c2) renderSeries(c2, {width: c2.offsetWidth || 760, height: 190});
+    
+    const c3 = document.getElementById('duckChart');
+    if(c3) renderDuck(c3);
+    
+    const c4 = document.getElementById('costErrorChart');
+    if(c4) renderCostBars(c4);
+    
+    const c5 = document.getElementById('costDistChart');
+    if(c5) renderCostDist(c5);
+    
+    const enc = document.getElementById('encoderViz');
+    if(enc) animateEncoders(enc);
+  }
+
+  function animateEncoders(container){
+    container.querySelectorAll('.encoder, .attn-block, .out-block').forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(8px)';
+      setTimeout(() => {
+        el.style.transition = 'all 400ms ease';
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      }, 80 * i);
+    });
+  }
+
+  Reveal.on('ready', () => { renderAll(); updateDemo(); updateStrategyOutcome(); });
+  Reveal.on('slidechanged', () => { renderAll(); });
+</script>
+<script>
+  // ═══════════════════════════════════════════════════════════════════════
+  // ─── Strategy Outcome Toggle ─────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  function updateStrategyOutcome(){
+    const selected = document.querySelector('input[name="stratChoice"]:checked');
+    const outcomeBox = document.getElementById('stratOutcome');
+    if(!selected || !outcomeBox) return;
+    
+    if(selected.value === 'ignore'){
+      outcomeBox.style.background = '#2d1515';
+      outcomeBox.style.borderColor = '#e05c3a';
+      outcomeBox.innerHTML = `
+        <div style="font-size:11px;color:#ff9580;font-weight:600;margin-bottom:4px">Tomorrow at 5:00 PM:</div>
+        <div style="font-size:11px;color:#cfe4ff;line-height:1.5">Solar output drops 15% below forecast → Zone Z-14 transmission line hits capacity → Emergency redispatch required</div>
+        <div style="font-size:20px;font-weight:700;color:#ff9580;margin-top:8px">Total cost: $1,300,000</div>
+      `;
+    } else {
+      outcomeBox.style.background = '#0e2d1a';
+      outcomeBox.style.borderColor = '#4ecf8e';
+      outcomeBox.innerHTML = `
+        <div style="font-size:11px;color:#4ecf8e;font-weight:600;margin-bottom:4px">Tomorrow at 5:00 PM:</div>
+        <div style="font-size:11px;color:#cfe4ff;line-height:1.5">Solar output drops 15% below forecast → BUT flexible unit in Z-12 absorbs the ramp → Zone Z-14 stays within capacity → No emergency action needed</div>
+        <div style="font-size:20px;font-weight:700;color:#4ecf8e;margin-top:8px">Total cost: $75,000</div>
+        <div style="font-size:10px;color:var(--gold);margin-top:6px;font-weight:600">💰 Savings: $1,225,000 (94% reduction)</div>
+      `;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ─── Interactive N-1 Demo Logic ──────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  function updateDemo(){
+    const demandEl = document.getElementById('demandSlider');
+    const outageEl = document.getElementById('outageChk');
+    const predictEl = document.getElementById('applyPredict');
+    if(!demandEl) return;
+    
+    const demand = Number(demandEl.value);
+    const outage = outageEl.checked;
+    const apply = predictEl.checked;
+    
+    // update demand display
+    const demandValEl = document.getElementById('demandVal');
+    if(demandValEl) demandValEl.textContent = demand + ' MW';
+    
+    // compute base flows (simplified DC approximation)
+    const flows = {
+      f12: demand * 0.52,
+      f23: demand * 0.28,
+      f2l4: demand * 0.22,
+      f1l4: demand * 0.14
+    };
+    
+    if(outage){
+      // N-1: B-C line trips; its flow redistributes to other paths
+      const shed = flows.f23;
+      flows.f23 = 0;
+      flows.f2l4 += shed * 0.70;
+      flows.f1l4 += shed * 0.30;
+      flows.f12 += shed * 0.15;
+    }
+    
+    if(apply){
+      // Pre-dispatch mitigation: pre-positioned generation reduces peak flows
+      const factor = 0.62;
+      Object.keys(flows).forEach(k => { flows[k] = Math.max(0, flows[k] * (1 - factor*0.5)); });
+    }
+    
+    const cap = {f12:100, f23:100, f2l4:120, f1l4:60};
+    let anyOver = false;
+    let overAmt = 0;
+    const over = {};
+    Object.keys(flows).forEach(k => {
+      over[k] = flows[k] > cap[k];
+      if(over[k]){ anyOver = true; overAmt += flows[k] - cap[k]; }
+    });
+    
+    // line colors
+    const color = k => over[k] ? '#ff6b6b' : (k === 'f23' && outage ? '#2a3a4a' : '#4a7aad');
+    const l12 = document.getElementById('l12');
+    const l23 = document.getElementById('l23');
+    const l2l4 = document.getElementById('l2l4');
+    const l1l4 = document.getElementById('l1l4');
+    if(l12) l12.setAttribute('stroke', color('f12'));
+    if(l23){
+      l23.setAttribute('stroke', outage ? '#2a3a4a' : (over.f23 ? '#ff6b6b' : '#4a7aad'));
+      l23.setAttribute('opacity', outage ? '0.3' : '1');
+    }
+    if(l2l4) l2l4.setAttribute('stroke', color('f2l4'));
+    if(l1l4) l1l4.setAttribute('stroke', color('f1l4'));
+    
+    // flow labels
+    const fl12 = document.getElementById('flow12');
+    const fl2l4 = document.getElementById('flow2l4');
+    const fl1l4 = document.getElementById('flow1l4');
+    if(fl12) fl12.textContent = `${Math.round(flows.f12)} MW`;
+    if(fl2l4) fl2l4.textContent = `${Math.round(flows.f2l4)} MW`;
+    if(fl1l4) fl1l4.textContent = `${Math.round(flows.f1l4)} MW`;
+    
+    // costs
+    const costWithout = anyOver && !apply ? 200000 + Math.round(overAmt * 4800) : (anyOver ? 200000 + Math.round(overAmt * 4800) : 0);
+    const costWith = apply ? Math.max(0, Math.round(costWithout * (1 - 0.63))) : costWithout;
+    const savings = costWithout - costWith;
+    
+    // status
+    const statusEl = document.getElementById('demoStatus');
+    const boxEl = document.getElementById('demoStatusBox');
+    if(statusEl && boxEl){
+      if(anyOver && !apply){
+        statusEl.textContent = '🚨 CONSTRAINT BINDING — lines over capacity';
+        statusEl.style.color = '#ff9580';
+        boxEl.style.borderLeftColor = 'var(--accent)';
+      } else if(anyOver && apply){
+        statusEl.textContent = '⚠️ Risk reduced — AI mitigation active';
+        statusEl.style.color = 'var(--gold)';
+        boxEl.style.borderLeftColor = 'var(--gold)';
+      } else {
+        statusEl.textContent = '✅ OK — no constraint binding';
+        statusEl.style.color = 'var(--green)';
+        boxEl.style.borderLeftColor = 'var(--brand)';
+      }
+    }
+    
+    const costWithoutEl = document.getElementById('costWithout');
+    const costWithEl = document.getElementById('costWith');
+    const costSavingsEl = document.getElementById('costSavings');
+    if(costWithoutEl) costWithoutEl.textContent = '$' + costWithout.toLocaleString();
+    if(costWithEl) costWithEl.textContent = '$' + costWith.toLocaleString();
+    if(costSavingsEl){
+      costSavingsEl.textContent = savings > 0 
+        ? 'Saved: $' + savings.toLocaleString() + ' (' + Math.round(savings/costWithout*100) + '%)'
+        : 'No event — $0 exposure';
+    }
+  }
+  
+  updateDemo();
+</script>
+</body>
+</html>
