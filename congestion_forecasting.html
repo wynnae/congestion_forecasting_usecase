@@ -469,101 +469,67 @@
     <!-- ═══════════ SLIDE 10 — DATA ENGINEERING ═══════════ -->
     <section>
       <div class="slide-tag">Data Engineering</div>
-      <h2>From raw data to learnable representations</h2>
+      <h2>From raw data to learnable signals</h2>
       <div style="margin-top:15px">
         
         <!-- Four streams -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:25px">
-          <!-- Demand -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px">
           <div style="background:#071426;border-radius:10px;padding:16px;border-left:4px solid var(--brand)">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
               <div style="font-size:20px">📈</div>
-              <h3 style="font-size:15px;color:var(--brand);margin:0">Demand Forecasts</h3>
+              <h3 style="font-size:15px;color:var(--brand);margin:0">Demand</h3>
             </div>
-            <div style="font-size:12px;color:#cfe4ff;line-height:1.6;margin-bottom:10px">
-              Hourly load per zone → Aggregate to transmission corridors → Normalize by historical peak
-            </div>
-            <div style="font-size:10px;color:var(--muted)">
-              Challenge: 100+ zones → 20 corridor-level features
+            <div style="font-size:12px;color:#cfe4ff;line-height:1.6">
+              Zone-level loads → Aggregate to corridor flows → Capture regional stress patterns
             </div>
           </div>
 
-          <!-- Weather -->
           <div style="background:#071426;border-radius:10px;padding:16px;border-left:4px solid var(--gold)">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
               <div style="font-size:20px">🌤️</div>
-              <h3 style="font-size:15px;color:var(--gold);margin:0">Weather Data</h3>
+              <h3 style="font-size:15px;color:var(--gold);margin:0">Weather</h3>
             </div>
-            <div style="font-size:12px;color:#cfe4ff;line-height:1.6;margin-bottom:10px">
-              Point forecasts → Spatial embeddings by zone centroid → Time-lagged features (solar ramp rates)
-            </div>
-            <div style="font-size:10px;color:var(--muted)">
-              Challenge: Capture ramp events, not just levels
+            <div style="font-size:12px;color:#cfe4ff;line-height:1.6">
+              Temperature, wind, cloud cover → Embed by location → Track ramp rates (not just levels)
             </div>
           </div>
 
-          <!-- Fuel Mix -->
           <div style="background:#071426;border-radius:10px;padding:16px;border-left:4px solid var(--green)">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
               <div style="font-size:20px">⚡</div>
               <h3 style="font-size:15px;color:var(--green);margin:0">Fuel Mix</h3>
             </div>
-            <div style="font-size:12px;color:#cfe4ff;line-height:1.6;margin-bottom:10px">
-              Generation by source → Renewable penetration % → Price signals (gas, LMP spreads)
-            </div>
-            <div style="font-size:10px;color:var(--muted)">
-              Challenge: Encode economic dispatch pressure
+            <div style="font-size:12px;color:#cfe4ff;line-height:1.6">
+              Renewable vs. dispatchable generation → Encode price signals → Track economic pressure
             </div>
           </div>
 
-          <!-- Outages -->
           <div style="background:#071426;border-radius:10px;padding:16px;border-left:4px solid var(--accent)">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
               <div style="font-size:20px">🔧</div>
-              <h3 style="font-size:15px;color:var(--accent);margin:0">Grid Outages</h3>
+              <h3 style="font-size:15px;color:var(--accent);margin:0">Outages</h3>
             </div>
-            <div style="font-size:12px;color:#cfe4ff;line-height:1.6;margin-bottom:10px">
-              2,000+ line events → Zone aggregation → Criticality weighting (PTDF matrices) → Temporal embeddings
-            </div>
-            <div style="font-size:10px;color:var(--muted)">
-              Challenge: 99.7% sparse, ~100M states
+            <div style="font-size:12px;color:#cfe4ff;line-height:1.6">
+              Thousands of line events → Compress by criticality → Embed which lines matter most
             </div>
           </div>
         </div>
 
-        <!-- Temporal fusion -->
-        <div style="background:linear-gradient(135deg,#0b2d4a,#1a0f2a);border:2px solid var(--brand);border-radius:12px;padding:20px;margin-bottom:20px">
-          <h3 style="font-size:16px;color:var(--brand);margin-bottom:12px">⏱️ Temporal Cross-Attention</h3>
-          <div style="display:flex;gap:20px;align-items:center">
-            <div style="flex:1;font-size:13px;color:#cfe4ff;line-height:1.7">
-              All four streams encoded as time series (24-hour lookback) → LSTM encoders capture temporal patterns → <strong style="color:var(--gold)">Cross-attention layer</strong> learns which signal matters most for <strong style="color:var(--gold)">each hour ahead</strong> → Outputs: risk score + cost estimate
-            </div>
-            <div style="flex:0 0 200px;text-align:center">
-              <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Attention weights<br>shift per hour:</div>
-              <div style="font-size:24px;color:var(--gold);font-weight:700;margin-bottom:4px">Context-Aware</div>
-              <div style="font-size:10px;color:var(--muted)">not context-blind</div>
-            </div>
+        <!-- Fusion approach -->
+        <div style="background:linear-gradient(135deg,#0b2d4a,#1a0f2a);border:2px solid var(--brand);border-radius:12px;padding:18px;margin-bottom:18px">
+          <h3 style="font-size:16px;color:var(--brand);margin-bottom:10px">⏱️ Context-Aware Fusion</h3>
+          <div style="font-size:13px;color:#cfe4ff;line-height:1.7">
+            All four signals become time series (24-hour lookback) → LSTM encoders learn temporal patterns → <strong style="color:var(--gold)">Cross-attention layer</strong> decides which signal matters most <strong style="color:var(--gold)">for each hour ahead</strong> → Outputs: risk probability + cost estimate
           </div>
         </div>
 
-        <!-- Loss function -->
-        <div style="display:flex;gap:20px">
-          <div class="callout-green" style="flex:1;font-size:12px;padding:12px">
-            <strong style="color:var(--green)">Cost-weighted loss function</strong><br>
-            <span class="muted" style="font-size:11px;line-height:1.5;display:block;margin-top:6px">
-              Loss = Σ (cost<sub>i</sub> × error<sub>i</sub>) — Missed high-cost events penalized 10–20× more than false alarms
-            </span>
-          </div>
-          <div class="callout-gold" style="flex:1;font-size:12px;padding:12px">
-            <strong class="em">Why this matters</strong><br>
-            <span class="muted" style="font-size:11px;line-height:1.5;display:block;margin-top:6px">
-              Standard ML optimizes for accuracy. We optimize for business cost — the model learns that missing a $2M event is worse than 20 false alarms.
-            </span>
-          </div>
+        <!-- Key insight -->
+        <div class="callout-gold" style="font-size:13px;padding:14px">
+          <strong class="em">The insight:</strong> Standard ML optimizes for accuracy. We optimize for <strong>business cost</strong> — missing a $2M event is penalized 20× more than a false alarm. This aligns the model with operator priorities.
         </div>
 
       </div>
-      <aside class="notes">This is your "how we made it work" slide. Say: "You can't just throw raw data at a neural net." Walk through each stream: "Demand — aggregate 100+ zones to 20 transmission corridors. Weather — spatial embeddings by zone, time-lagged features to catch solar ramps. Fuel mix — encode renewable penetration and price signals. Outages — the hardest one — 2,000+ events, 99.7% sparse. We aggregate by zone, weight by criticality using power transfer distribution factors, embed temporal patterns." Point to the middle box: "All four become time series with 24-hour lookback. LSTM encoders learn temporal patterns. Cross-attention layer decides which signal matters most for each hour ahead." Point to the loss function: "We don't optimize for accuracy — we optimize for cost. Missing a $2M event is penalized 20× more than crying wolf. This aligns the model with business reality."</aside>
+      <aside class="notes">Keep it conceptual. Say: "You can't just throw raw data at a neural net — we had to engineer each signal to make it learnable." Point to the four boxes: "Demand gets aggregated to corridor flows. Weather gets embedded by location and we track ramp rates, not just levels. Fuel mix encodes economic pressure from renewables vs. dispatchable generation. Outages — thousands of events — get compressed by criticality so the model learns which lines matter." Point to the fusion box: "All four become time series with 24-hour lookback. Cross-attention decides which signal matters most for each specific hour ahead." Bottom callout: "And critically — we don't optimize for accuracy. We optimize for business cost. Missing a $2M event hurts 20 times more than crying wolf. The model learns operator priorities."</aside>
     </section>
 
     <!-- ═══════════ SLIDE 11 — FROM DATA TO DECISION ═══════════ -->
@@ -635,48 +601,10 @@
           </div>
         </div>
 
-        <!-- WHY IT WORKS -->
-        <div style="display:flex;gap:20px;margin-top:25px">
-          <div style="flex:1;background:#0b1e30;border-radius:10px;padding:18px">
-            <h3 style="font-size:15px;color:var(--gold);margin-bottom:12px">Why cross-attention matters</h3>
-            <div style="font-size:12px;color:#cfe4ff;line-height:1.6">
-              The model learns <strong>context-dependent weighting</strong>. Same four data streams, different attention pattern every hour:
-            </div>
-            <div style="display:flex;gap:15px;margin-top:15px">
-              <div style="flex:1;background:#071426;border-radius:8px;padding:12px">
-                <div style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:6px">Calm Summer Day</div>
-                <div style="font-size:10px;color:var(--muted);line-height:1.5">
-                  Demand: <strong style="color:#cfe4ff">80%</strong><br>
-                  Weather: 10%<br>
-                  Outages: 5%<br>
-                  Fuel: 5%
-                </div>
-              </div>
-              <div style="flex:1;background:#071426;border-radius:8px;padding:12px">
-                <div style="font-size:11px;color:var(--accent);font-weight:600;margin-bottom:6px">Wind + Outages</div>
-                <div style="font-size:10px;color:var(--muted);line-height:1.5">
-                  Demand: 10%<br>
-                  Weather: <strong style="color:#cfe4ff">40%</strong><br>
-                  Outages: <strong style="color:#cfe4ff">45%</strong><br>
-                  Fuel: 5%
-                </div>
-              </div>
-              <div style="flex:1;background:#071426;border-radius:8px;padding:12px">
-                <div style="font-size:11px;color:var(--gold);font-weight:600;margin-bottom:6px">Evening Ramp</div>
-                <div style="font-size:10px;color:var(--muted);line-height:1.5">
-                  Demand: 25%<br>
-                  Weather: <strong style="color:#cfe4ff">40%</strong><br>
-                  Outages: 25%<br>
-                  Fuel: 10%
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top:20px">
-          <div class="callout-gold" style="font-size:13px;max-width:900px;margin:0 auto">
-            <strong class="em">The key:</strong> A single-model approach blends everything into one averaged signal. Cross-attention lets the model say "solar variability matters 4× more this hour than last hour" — and adjust the forecast accordingly.
+        <!-- KEY INSIGHT -->
+        <div style="margin-top:22px">
+          <div class="callout-gold" style="font-size:13px;max-width:900px;margin:0 auto;padding:14px">
+            <strong class="em">Why this beats a single blended model:</strong> Attention weights shift hour by hour. On a calm day, demand dominates (80%). During a storm with outages, weather and topology take over (85% combined). Evening solar ramp — weather still matters (40%) but demand rebalances. The model adapts its focus automatically.
           </div>
         </div>
       </div>
@@ -816,32 +744,8 @@
         </div>
 
         <!-- WHAT DROVE THIS -->
-        <div style="background:#071426;border-radius:12px;padding:20px;max-width:900px;margin:0 auto 25px">
-          <h3 style="font-size:16px;color:var(--gold);margin-bottom:15px">What triggered this 84% binding probability?</h3>
-          
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-            <div style="padding:12px;background:#0b1e30;border-radius:8px;border-left:4px solid var(--gold)">
-              <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:4px">☀️ Solar Forecast</div>
-              <div style="font-size:11px;color:#cfe4ff;line-height:1.6">320 MW expected at 5pm<br><span style="color:var(--muted)">Evening ramp coincides with peak demand</span></div>
-            </div>
-            <div style="padding:12px;background:#0b1e30;border-radius:8px;border-left:4px solid var(--gold)">
-              <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:4px">📈 Load Forecast</div>
-              <div style="font-size:11px;color:#cfe4ff;line-height:1.6">1,850 MW peak demand<br><span style="color:var(--muted)">Typical summer evening spike</span></div>
-            </div>
-            <div style="padding:12px;background:#0b1e30;border-radius:8px;border-left:4px solid var(--gold)">
-              <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:4px">🔧 Scheduled Outages</div>
-              <div style="font-size:11px;color:#cfe4ff;line-height:1.6">2 maintenance events in Z-11<br><span style="color:var(--muted)">Reduces available transmission paths</span></div>
-            </div>
-            <div style="padding:12px;background:#0b1e30;border-radius:8px;border-left:4px solid var(--gold)">
-              <div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:4px">⚡ Market Prices</div>
-              <div style="font-size:11px;color:#cfe4ff;line-height:1.6">High gas prices<br><span style="color:var(--muted)">Generators favor distant zones → flow stress</span></div>
-            </div>
-          </div>
-
-          <div style="padding:14px;background:#0a1d12;border-radius:10px;border:1px solid #1a3a2a;margin-top:15px">
-            <div style="font-size:12px;color:#4ecf8e;font-weight:600;margin-bottom:5px">🧠 Multi-Modal Fusion</div>
-            <div style="font-size:11px;color:var(--muted);line-height:1.7">Cross-attention weighted all four data streams for this specific hour → Weather got 40% (solar ramp risk), outages 25% (topology stress), demand 25% (evening peak), fuel 10%</div>
-          </div>
+        <div class="callout-gold" style="font-size:13px;max-width:900px;margin:0 auto 25px;padding:16px">
+          <strong class="em">What triggered the 84% forecast?</strong> Four converging signals: Solar expected at 320 MW during evening ramp. Peak demand at 1,850 MW. Two scheduled outages in Z-11 reducing transmission paths. High gas prices creating flow stress. <strong style="color:#4ecf8e">Cross-attention weighted weather at 40%</strong> — the model knew solar variability was the biggest risk this specific hour.
         </div>
 
         <!-- THE IMPACT -->

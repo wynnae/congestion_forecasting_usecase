@@ -122,43 +122,25 @@ Walk through the ladder on the right: persistence sets the floor, RF improves on
 ---
 
 ## Slide 10 — Data Engineering
-**"From raw data to learnable representations"**
+**"From raw data to learnable signals"**
 
-This is your "how we made it work" slide. The key message: you can't just throw raw data at a neural net.
+Keep this conceptual and brief. Don't dive into implementation details.
 
-Say: "Before we get to the model, we have to engineer the data. All four streams need compression, transformation, and structure to become learnable."
+Say: "Before we get to the model, we had to engineer the data. You can't just throw raw signals at a neural net — each one needs structure."
 
-**Walk through each stream (2x2 grid at top):**
+**Walk through the four boxes (quickly):**
+1. **Demand** — Zone-level loads get aggregated to corridor flows to capture regional stress.
+2. **Weather** — Embedded by location, and we track ramp rates (how fast solar is dropping) not just levels.
+3. **Fuel Mix** — Renewable vs. dispatchable generation, encoded with price signals to capture economic pressure.
+4. **Outages** — Thousands of line events get compressed by criticality so the model learns which lines matter.
 
-1. **Demand Forecasts (blue)**
-   - Say: "Demand starts as hourly load per zone — that's 100+ zones. We aggregate to transmission corridors, giving us ~20 corridor-level features. Normalize by historical peak to capture relative stress."
-   - Challenge: Dimensionality reduction without losing critical spatial patterns.
+**Point to the fusion box:**
+Say: "All four become time series with 24-hour lookback. LSTM encoders learn temporal patterns. Cross-attention decides which signal matters most for each specific hour ahead."
 
-2. **Weather Data (gold)**
-   - Say: "Weather comes in as point forecasts. We convert to spatial embeddings by zone centroid, add time-lagged features to catch solar ramp rates — not just levels, but how fast solar is dropping."
-   - Challenge: Capture ramp events, not just static snapshots.
+**Bottom callout:**
+Say: "And here's the key — we don't optimize for accuracy. We optimize for business cost. Missing a $2M event hurts 20 times more than a false alarm. The model learns operator priorities."
 
-3. **Fuel Mix (green)**
-   - Say: "Fuel mix is generation by source — coal, gas, renewables. We encode renewable penetration percentage and price signals — gas prices, LMP spreads — to capture economic dispatch pressure."
-   - Challenge: Encode which generators are economically favored, creating flow patterns.
-
-4. **Grid Outages (red)**
-   - Say: "This is the hardest one. 2,000+ outage events, 99.7% sparse, roughly 100 million states before you start modeling. We aggregate by zone, weight by criticality using PTDF matrices — power transfer distribution factors — and embed temporal patterns."
-   - Challenge: Compress massive sparse data without losing signal.
-
-**Point to the temporal cross-attention box (middle):**
-Say: "All four streams become time series with 24-hour lookback. LSTM encoders capture temporal patterns in each stream separately. Then cross-attention learns which signal matters most for each hour ahead. This is context-aware weighting — the model decides 'solar variability matters 40% this hour, but only 10% next hour' based on what's actually happening."
-
-**Point to the two callout boxes at bottom:**
-
-1. **Cost-weighted loss (green box)**
-   - Say: "We don't optimize for accuracy. We optimize for cost. The loss function is: sum of cost times error. Missing a $2M event is penalized 10 to 20 times more than crying wolf."
-   - This aligns the model with business reality.
-
-2. **Why this matters (gold box)**
-   - Say: "Standard ML optimizes for being right most often. We optimize for being right when it's expensive to be wrong. That's a different objective function, and it produces a different model."
-
-**Closing:** "This is forecasting engineering. You're designing the data representation and the loss function to reflect how the grid actually works — not just fitting a neural net to whatever data you have."
+**Closing:** Keep it moving. You've set up the "how" without bogging down in technical jargon. Next slide shows the pipeline in action.
 
 ---
 
@@ -176,16 +158,8 @@ Point to the middle (attention box): "Cross-attention layer processes all four s
 
 Point to the right (alert box): "Out comes an operator alert. Zone Z-14 North, tomorrow 5–7pm, 84% binding probability, estimated cost $950K to $1.4M if you do nothing. Recommendation: add 180 MW flexible capacity for $75K."
 
-**Why cross-attention matters (bottom section):**
-Say: "Here's why this architecture works. The model learns **context-dependent weighting**. Same four data streams, completely different attention pattern every hour."
-
-Point to the three scenarios:
-1. **Calm summer day** — Demand dominates at 80%. Weather, outages, fuel barely matter.
-2. **Wind + outages** — Topology and weather take over at 85% combined. Demand drops to 10%.
-3. **Evening ramp** — Balanced: weather 40%, demand 25%, outages 25%. The model knows this is a multi-factor risk hour.
-
-**Closing:**
-Point to the gold callout: "A single blended model can't do this. It averages everything into one signal. Cross-attention lets the model say 'solar variability matters 4× more this hour than last hour' — and adjust the forecast accordingly. That's the difference between context-blind and context-aware forecasting."
+**Why cross-attention matters (bottom callout):**
+Say: "Why does this beat a single blended model? Because attention weights shift hour by hour. On a calm day, demand dominates at 80%. During a storm with outages, weather and topology take over. Evening solar ramp — weather still matters but demand rebalances. The model adapts automatically. That's context-aware forecasting instead of context-blind."
 
 ---
 
@@ -248,16 +222,8 @@ Point LEFT (red box): "If you ignore the alert. Proceed with your cheap strategy
 
 Point RIGHT (green box): "If you act on the alert. Add 180 MW flexible capacity in Zone Z-12. Tomorrow at 5pm, same solar drop — but your flex unit absorbs the ramp. Zone Z-14 stays within capacity. $75K total."
 
-**WHAT DROVE THIS FORECAST (middle section):**
-Say: "So what made the model call this? Four signals, weighted intelligently."
-
-Walk through the data drivers:
-1. **Solar forecast** — 320 MW expected at 5pm. Evening ramp coincides with peak demand.
-2. **Load forecast** — 1,850 MW peak demand. Typical summer evening spike.
-3. **Scheduled outages** — 2 maintenance events in Zone Z-11. Reduces available transmission paths.
-4. **Market prices** — High gas prices. Generators favor distant zones, creating flow stress.
-
-Point to the green box at bottom: "Cross-attention weighted all four streams for this specific hour. Weather got 40% — solar ramp risk. Outages 25% — topology stress. Demand 25% — evening peak. Fuel 10%. The model knew solar variability was the biggest driver this hour."
+**WHAT DROVE THIS FORECAST (gold callout):**
+Say: "So what made the model call this? Four converging signals." Quick summary: "Solar expected at 320 MW during evening ramp. Peak demand at 1,850 MW. Two scheduled outages reducing transmission paths. High gas prices creating flow stress. Cross-attention weighted weather at 40% — the model knew solar variability was the biggest risk this specific hour."
 
 **THE IMPACT (gold box at bottom):**
 Point to the final number: "One decision. One alert. One day. $1.225 million saved. 94% cost reduction from having a 24-hour forecast window."
