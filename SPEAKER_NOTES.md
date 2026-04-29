@@ -121,34 +121,76 @@ Walk through the ladder on the right: persistence sets the floor, RF improves on
 
 ---
 
-## Slide 10 — Data Engineering Challenges
-**"Compressing thousands of sparse outages into learnable representations"**
+## Slide 10 — Data Engineering
+**"From raw data to learnable representations"**
 
-This is your technical deep-dive slide. Start with the scale: "Grid operators track 2,000 to 5,000+ potential outage events per region. Each one is a binary time series — scheduled or not — across 365 days times 24 hours. Before you even start modeling, you're looking at roughly 100 million potential states."
+This is your "how we made it work" slide. The key message: you can't just throw raw data at a neural net.
 
-**Call out the sparsity:**
-- 99.7% of hours have zero unplanned outages
-- 0.3% of hours drive 80%+ of congestion costs
-- Only ~50–200 transmission lines are "critical" — meaning they actually contribute to binding constraints
+Say: "Before we get to the model, we have to engineer the data. All four streams need compression, transformation, and structure to become learnable."
 
-Say: "You can't just feed raw outage tensors to an LSTM. The model would memorize noise, not learn causal structure. Compression isn't optional — it's mandatory."
+**Walk through each stream (2x2 grid at top):**
 
-**Walk through the encoding strategy (right side):**
-1. **Zone aggregation** — Group outages by transmission zone to reduce dimensionality from thousands to ~20–50 zones
-2. **Criticality weighting** — Not all lines matter equally. Weight each outage by its historical congestion impact (learned from PTDF matrices — power transfer distribution factors)
-3. **Temporal embedding** — Encode scheduled vs. unplanned, duration, and recurrence patterns as learned vectors
+1. **Demand Forecasts (blue)**
+   - Say: "Demand starts as hourly load per zone — that's 100+ zones. We aggregate to transmission corridors, giving us ~20 corridor-level features. Normalize by historical peak to capture relative stress."
+   - Challenge: Dimensionality reduction without losing critical spatial patterns.
 
-**Loss function design:**
-Say: "On the loss side, we don't use standard cross-entropy because it treats all errors equally. We use an **asymmetric cost-weighted loss** that penalizes missed high-cost events 10–20× more than false alarms. This aligns model optimization directly with business outcomes — not just accuracy, but cost-aware accuracy."
+2. **Weather Data (gold)**
+   - Say: "Weather comes in as point forecasts. We convert to spatial embeddings by zone centroid, add time-lagged features to catch solar ramp rates — not just levels, but how fast solar is dropping."
+   - Challenge: Capture ramp events, not just static snapshots.
 
-Show the formula on screen: Loss = Σ (cost<sub>i</sub> × error<sub>i</sub>) where cost scales with predicted congestion severity.
+3. **Fuel Mix (green)**
+   - Say: "Fuel mix is generation by source — coal, gas, renewables. We encode renewable penetration percentage and price signals — gas prices, LMP spreads — to capture economic dispatch pressure."
+   - Challenge: Encode which generators are economically favored, creating flow patterns.
 
-**Closing:** "This is forecasting engineering, not just model tuning. You're designing the data representation and the objective function to reflect the real-world structure of the problem."
+4. **Grid Outages (red)**
+   - Say: "This is the hardest one. 2,000+ outage events, 99.7% sparse, roughly 100 million states before you start modeling. We aggregate by zone, weight by criticality using PTDF matrices — power transfer distribution factors — and embed temporal patterns."
+   - Challenge: Compress massive sparse data without losing signal.
+
+**Point to the temporal cross-attention box (middle):**
+Say: "All four streams become time series with 24-hour lookback. LSTM encoders capture temporal patterns in each stream separately. Then cross-attention learns which signal matters most for each hour ahead. This is context-aware weighting — the model decides 'solar variability matters 40% this hour, but only 10% next hour' based on what's actually happening."
+
+**Point to the two callout boxes at bottom:**
+
+1. **Cost-weighted loss (green box)**
+   - Say: "We don't optimize for accuracy. We optimize for cost. The loss function is: sum of cost times error. Missing a $2M event is penalized 10 to 20 times more than crying wolf."
+   - This aligns the model with business reality.
+
+2. **Why this matters (gold box)**
+   - Say: "Standard ML optimizes for being right most often. We optimize for being right when it's expensive to be wrong. That's a different objective function, and it produces a different model."
+
+**Closing:** "This is forecasting engineering. You're designing the data representation and the loss function to reflect how the grid actually works — not just fitting a neural net to whatever data you have."
 
 ---
 
-## Slide 11 — Cost of Mistakes
-**"Not all mistakes are equal — we measure what matters"**
+## Slide 11 — From Data to Decision
+**"From data to decision: what the model actually does"**
+
+This is your bridge slide — showing the complete pipeline from raw data to operator alert.
+
+**Walk through the visual pipeline (top):**
+Say: "Let's see what happens when you feed tomorrow's data into the model."
+
+Point to the left (four input boxes): "Four data streams go in — demand forecast (1,850 MW peak), weather (solar at 320 MW expected at 5pm), fuel mix (high gas prices), and outages (2 scheduled in Zone Z-11)."
+
+Point to the middle (attention box): "Cross-attention layer processes all four signals and weights each one specifically for tomorrow at 5pm. Notice the weights — weather gets 40%, outages 25%, demand 25%, fuel mix 10%. The model is saying 'for this specific hour, solar variability is the biggest driver.'"
+
+Point to the right (alert box): "Out comes an operator alert. Zone Z-14 North, tomorrow 5–7pm, 84% binding probability, estimated cost $950K to $1.4M if you do nothing. Recommendation: add 180 MW flexible capacity for $75K."
+
+**Why cross-attention matters (bottom section):**
+Say: "Here's why this architecture works. The model learns **context-dependent weighting**. Same four data streams, completely different attention pattern every hour."
+
+Point to the three scenarios:
+1. **Calm summer day** — Demand dominates at 80%. Weather, outages, fuel barely matter.
+2. **Wind + outages** — Topology and weather take over at 85% combined. Demand drops to 10%.
+3. **Evening ramp** — Balanced: weather 40%, demand 25%, outages 25%. The model knows this is a multi-factor risk hour.
+
+**Closing:**
+Point to the gold callout: "A single blended model can't do this. It averages everything into one signal. Cross-attention lets the model say 'solar variability matters 4× more this hour than last hour' — and adjust the forecast accordingly. That's the difference between context-blind and context-aware forecasting."
+
+---
+
+## Slide 12 — Cost of Mistakes
+**"Not all mistakes are equal"**
 
 Say: "This is actually a well-known problem in medical AI — a missed cancer is far worse than a false biopsy. We applied the same principle: tune the operating threshold to reflect the real cost of being wrong in each direction. That's a forecasting science discipline, not just a model choice."
 
@@ -158,64 +200,73 @@ Bar chart on the right reinforces: small false alarms are cheap, large misses ar
 
 ---
 
-## Slide 12 — Interactive Demo
-**"Try it yourself: what would you do with this alert?"**
+## Slide 13 — The Scenario
+**"Tuesday 10am: tomorrow will be expensive"**
 
-This is your interactive engagement slide. Get them to participate.
+This is your setup slide. Get the audience into the operator's shoes.
 
-**LEFT - The Choice:**
-Say: "Now let's make this tangible. You're the operator. The model has given you an alert. What would you do?" 
+**THE ALERT (green box at top):**
+Say: "It's Tuesday morning at 10am. You're planning tomorrow's dispatch. The model sends you an alert."
 
-Point to the two radio buttons:
-- **Option 1 (Ignore)**: "Maybe you don't trust the model yet. Maybe you're budget-conscious. You proceed with the cheap strategy."
-- **Option 2 (Act)**: "Or you trust the forecast. You add the flexible capacity for $75K."
-
-**Let them click one:** "Watch what happens in the outcome box below."
-- **If ignore**: "Tomorrow at 5pm, solar drops 15% below forecast, Zone Z-14 hits capacity, emergency redispatch — $1.3 million."
-- **If act**: "Tomorrow at 5pm, same solar drop, but your flexible unit absorbs the ramp. Zone Z-14 stays within capacity. Total cost: $75K. You saved $1.225 million."
-
-Say: "Same grid. Same weather. Different information. Different outcome. That's the power of the 24-hour window."
-
-**RIGHT - What Drove This:**
-Walk through the four data inputs:
-1. **Solar forecast** — 320 MW expected at 5pm, peak hour coinciding with evening ramp
-2. **Load forecast** — 1,850 MW peak demand, typical summer evening
-3. **Scheduled outages** — 2 maintenance events in Zone Z-11 reducing available paths
-4. **Market prices** — High gas prices pushing generators to distant zones, creating flow stress
-
-Point to the green box at bottom: "The cross-attention mechanism fused all four signals to predict 84% binding probability for Zone Z-14 at 5-7pm. That's multi-modal forecasting in action — not just one data source, but the intelligent fusion of four."
-
-**Closing:** "This is what the model enables: specific alerts, cost estimates, actionable recommendations, and the confidence to make a $75K decision that avoids a $1.3 million problem."
-
----
-
-## Slide 13 — The Impact
-**"Tuesday 10am: The model tells you tomorrow will be expensive"**
-
-This is your dramatic reveal slide. Now show them the full picture.
-
-**TOP - The Alert (green box):**
-Say: "So here's the alert the model sent. It's Tuesday morning at 10am. You're planning tomorrow." Point to the key info:
+Point to the alert details:
 - Zone Z-14 North
-- 84% probability of binding tomorrow 5-7pm
-- Estimated cost: $950K to $1.4M if you do nothing
-- Recommendation: Pre-commit 180 MW flexible capacity in Zone Z-12 for $75K
+- Tomorrow 5:00-7:00 PM
+- 84% binding probability
+- Estimated cost if unmitigated: $950K to $1.4M
+- Model recommendation: Pre-commit 180 MW flexible capacity in Zone Z-12 for $75K
 
-**MIDDLE - The Choice:**
-Say: "You had two paths."
+Say: "The model is telling you: this is going to be expensive unless you act. Here's what to do."
 
-Point LEFT (red box): "Ignore the alert. Proceed with your cheap baseline strategy. Tomorrow at 5pm, solar drops, Zone Z-14 binds. You pay $1.3 million in emergency costs."
+**THE CHOICE (interactive radio buttons):**
+Say: "Now you're the operator. What would you do?" 
 
-Point RIGHT (green box): "Act on the alert. Add 180 MW flexible capacity in Zone Z-12. Tomorrow at 5pm, same solar drop happens — but your flexible unit absorbs the ramp. Total cost: $75K."
+Point to the two options:
+- **Option 1 (Ignore)**: "Maybe you don't trust the model yet. Maybe you're cost-conscious. You proceed with the cheap baseline strategy — baseload plus renewables."
+- **Option 2 (Act)**: "Or you trust the forecast. You add 180 MW flexible capacity in Zone Z-12 for $75K."
 
-**BOTTOM - The Impact:**
-Point to the gold box at bottom: "One decision. One alert. One day. $1.225 million saved. That's a 94% cost reduction from having a 24-hour forecast window."
+**Let them select one:** "Watch what happens in the outcome box."
 
-**Closing:** "Multiply that across 365 days and dozens of zones — that's the value proposition of having this model in the hands of day-ahead operators."
+**THE OUTCOME:**
+- **If ignore is selected**: "Tomorrow at 5pm, solar drops 15% below forecast. Zone Z-14 transmission line hits capacity. Emergency redispatch required. Total cost: $1.3 million."
+- **If act is selected**: "Tomorrow at 5pm, same solar drop happens — but your flexible unit absorbs the ramp. Zone Z-14 stays within capacity. Total cost: $75K."
+
+Say: "That's the decision the model enables. You have 24 hours to act. The question is: do you trust the forecast?"
+
+**Closing:** Pause here. Let the tension build. Next slide reveals the full picture.
 
 ---
 
-## Slide 14 — Citations
+## Slide 14 — The Reveal
+**"Here's what actually happens"**
+
+This is the big reveal slide. Now show them everything.
+
+**THE TWO PATHS (side-by-side comparison):**
+Say: "Let me show you the full picture."
+
+Point LEFT (red box): "If you ignore the alert. Proceed with your cheap strategy. Tomorrow at 5pm, solar drops. Zone Z-14 hits capacity. Emergency redispatch. $1.3 million."
+
+Point RIGHT (green box): "If you act on the alert. Add 180 MW flexible capacity in Zone Z-12. Tomorrow at 5pm, same solar drop — but your flex unit absorbs the ramp. Zone Z-14 stays within capacity. $75K total."
+
+**WHAT DROVE THIS FORECAST (middle section):**
+Say: "So what made the model call this? Four signals, weighted intelligently."
+
+Walk through the data drivers:
+1. **Solar forecast** — 320 MW expected at 5pm. Evening ramp coincides with peak demand.
+2. **Load forecast** — 1,850 MW peak demand. Typical summer evening spike.
+3. **Scheduled outages** — 2 maintenance events in Zone Z-11. Reduces available transmission paths.
+4. **Market prices** — High gas prices. Generators favor distant zones, creating flow stress.
+
+Point to the green box at bottom: "Cross-attention weighted all four streams for this specific hour. Weather got 40% — solar ramp risk. Outages 25% — topology stress. Demand 25% — evening peak. Fuel 10%. The model knew solar variability was the biggest driver this hour."
+
+**THE IMPACT (gold box at bottom):**
+Point to the final number: "One decision. One alert. One day. $1.225 million saved. 94% cost reduction from having a 24-hour forecast window."
+
+**Closing:** "Multiply that across 365 days and dozens of zones — that's the value of putting this model in the hands of day-ahead operators. It's not about fancy neural nets. It's about enabling better decisions 24 hours before the problem hits."
+
+---
+
+## Slide 15 — Citations
 **"References"**
 
 This is your backup slide with full citations for all the market data. You likely won't present this during the talk unless asked, but it's critical to have available.
