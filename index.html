@@ -650,77 +650,7 @@
       </div>
     </section>
 
-    <!-- ═══════════ SLIDE 13 — DATA ENGINEERING ═══════════ -->
-    <section>
-      <div class="slide-tag">Data Engineering</div>
-      <h2>From raw data to learnable signals</h2>
-      
-      <div class="callout" style="max-width:900px;margin:15px auto;font-size:13px;padding:14px">
-        The model architecture is elegant, but it's worthless without the right inputs. Raw sensor data isn't learnable. Each signal needs engineering.
-      </div>
-      
-      <div style="margin-top:15px">
-        
-        <!-- Four streams -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px">
-          <div style="background:#EBF2F8;border-radius:10px;padding:16px;border-left:4px solid var(--brand)">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-              <div style="font-size:20px" class="mi">trending_up</div>
-              <h3 style="font-size:15px;color:var(--brand);margin:0">Demand</h3>
-            </div>
-            <div style="font-size:12px;color:#495057;line-height:1.6">
-              The model aggregates zone-level loads into corridor flows, capturing regional stress patterns that drive transmission constraints.
-            </div>
-          </div>
-
-          <div style="background:#FDF6E8;border-radius:10px;padding:16px;border-left:4px solid var(--gold)">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-              <div style="font-size:20px" class="mi">wb_sunny</div>
-              <h3 style="font-size:15px;color:var(--gold);margin:0">Weather</h3>
-            </div>
-            <div style="font-size:12px;color:#495057;line-height:1.6">
-              Temperature, wind, and cloud cover data get embedded by location. The model tracks ramp rates rather than absolute levels since rapid changes drive congestion risk.
-            </div>
-          </div>
-
-          <div style="background:#E8F5F5;border-radius:10px;padding:16px;border-left:4px solid var(--green)">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-              <div style="font-size:20px" class="mi">bolt</div>
-              <h3 style="font-size:15px;color:var(--green);margin:0">Fuel Mix</h3>
-            </div>
-            <div style="font-size:12px;color:#495057;line-height:1.6">
-              The balance between renewable and dispatchable generation encodes price signals, helping the model track economic pressure that influences dispatch decisions.
-            </div>
-          </div>
-
-          <div style="background:#FAE9E9;border-radius:10px;padding:16px;border-left:4px solid var(--accent)">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-              <div class="mi" style="font-size:20px;color:var(--brand)">build</div>
-              <h3 style="font-size:15px;color:var(--accent);margin:0">Outages</h3>
-            </div>
-            <div style="font-size:12px;color:#495057;line-height:1.6">
-              The model compresses thousands of line outage events by criticality, learning which specific transmission lines create the most binding risk.
-            </div>
-          </div>
-        </div>
-
-        <!-- Fusion approach -->
-        <div style="background:#EBF2F8;border:2px solid var(--brand);border-radius:12px;padding:18px;margin-bottom:18px">
-          <h3 style="font-size:16px;color:var(--brand);margin-bottom:10px"><span class="mi" style="font-size:18px;vertical-align:middle">timer</span> Context-Aware Fusion</h3>
-          <div style="font-size:13px;color:#495057;line-height:1.7">
-            All four signals become time series with 24-hour lookback. LSTM encoders learn temporal patterns from historical data. The <strong style="color:var(--gold)">cross-attention layer</strong> decides which signal matters most <strong style="color:var(--gold)">for each hour ahead</strong>, then outputs a risk probability and cost estimate.
-          </div>
-        </div>
-
-        <!-- Key insight -->
-        <div class="callout-gold" style="font-size:13px;padding:14px">
-          <strong class="em">The insight:</strong> Standard ML optimizes for accuracy. We optimize for <strong>business cost</strong>. Missing a $2M event is penalized 20× more than a false alarm. This aligns the model with operator priorities.
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ═══════════ SLIDE 14 — FROM DATA TO DECISION ═══════════ -->
+    <!-- ═══════════ SLIDE 13 — FROM DATA TO DECISION ═══════════ -->
     <section>
       <div class="slide-tag">How It Works</div>
       <h2>From data to decision: what the model does</h2>
@@ -798,7 +728,7 @@
       </div>
     </section>
 
-    <!-- ═══════════ SLIDE 15 — THE DECISION ═══════════ -->
+    <!-- ═══════════ SLIDE 14 — THE DECISION ═══════════ -->
     <section>
       <div class="slide-tag">Day-Ahead Decision</div>
       <h2>Back to Tuesday 10am: what would you do?</h2>
@@ -830,7 +760,7 @@
       </div>
     </section>
 
-    <!-- ═══════════ SLIDE 16 — THE REVEAL ═══════════ -->
+    <!-- ═══════════ SLIDE 15 — THE REVEAL ═══════════ -->
     <section>
       <div class="slide-tag">The Full Picture</div>
       <h2>Here's what happens</h2>
@@ -891,7 +821,7 @@
       </div>
     </section>
 
-    <!-- ═══════════ SLIDE 17 — APPLYING TO LILLY ═══════════ -->
+    <!-- ═══════════ SLIDE 16 — APPLYING TO LILLY ═══════════ -->
     <section>
       <div class="slide-tag">Transfer Learning</div>
       <h2>Thinking about Lilly...</h2>
@@ -940,7 +870,7 @@
       </div>
     </section>
 
-    <!-- ═══════════ SLIDE 18 — CITATIONS ═══════════ -->
+    <!-- ═══════════ SLIDE 17 — CITATIONS ═══════════ -->
     <section>
       <div class="slide-tag">References</div>
       <h2>Citations</h2>
