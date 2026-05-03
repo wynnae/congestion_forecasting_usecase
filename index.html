@@ -6,6 +6,7 @@
   <title>Predicting Power Grid Crises: AI Forecasting Science</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
     /* ── Tokens ───────────────────────────────────────────────────────── */
     :root {
@@ -18,6 +19,24 @@
       --surface: #F8F9FA;  /* Subtle off-white */
       --border:  #DEE2E6;  /* Light border */
       --text:    #212529;  /* Near black */
+    }
+
+    /* Material Icons helper */
+    .mi {
+      font-family: 'Material Icons';
+      font-weight: normal;
+      font-style: normal;
+      display: inline-block;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: 'liga';
     }
     html, body { height: 100%; background: var(--bg); margin: 0; }
     body { font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif; color: var(--text); }
@@ -138,13 +157,13 @@
         </div>
 
         <!-- NETWORK DIAGRAM -->
-        <div style="display:flex;gap:40px;align-items:center;justify-content:center;margin-bottom:25px">
+        <div style="display:flex;gap:40px;align-items:center;justify-content:center;margin-bottom:10px">
           <!-- LEFT SIDE: Gen A + Zone 1 -->
           <div style="display:flex;flex-direction:column;gap:15px;min-width:240px">
             <!-- Gen A - Cheap -->
             <div id="genA" style="background:#E8F5F5;border:2px solid var(--green);border-radius:10px;padding:12px;transition:all 0.3s">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-                <div style="font-size:24px">🌊</div>
+                <div class="mi" style="font-size:24px;color:var(--green)">water_drop</div>
                 <div>
                   <div style="font-size:14px;font-weight:700;color:var(--green)">Gen A (Hydro)</div>
                   <div style="font-size:11px;color:var(--muted)">Cap: 1,200 MW</div>
@@ -159,7 +178,7 @@
             <!-- Zone 1 -->
             <div style="background:#EBF2F8;border:2px solid var(--brand);border-radius:10px;padding:12px">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-                <div style="font-size:24px">🏙️</div>
+                <div style="font-size:24px" class="mi">location_city</div>
                 <div>
                   <div style="font-size:14px;font-weight:700;color:var(--brand)">Zone 1</div>
                   <div style="font-size:11px;color:var(--muted)">City Center</div>
@@ -204,7 +223,7 @@
             <!-- Gen B - Expensive -->
             <div id="genB" style="background:#FAE9E9;border:2px solid var(--accent);border-radius:10px;padding:12px;transition:all 0.3s">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-                <div style="font-size:24px">🔥</div>
+                <div class="mi" style="font-size:24px;color:var(--accent)">local_fire_department</div>
                 <div>
                   <div style="font-size:14px;font-weight:700;color:var(--accent)">Gen B (Gas)</div>
                   <div style="font-size:11px;color:var(--muted)">Cap: 1,200 MW</div>
@@ -219,7 +238,7 @@
             <!-- Gen C - Fast-Start Peaker -->
             <div id="genC" style="background:#FDF6E8;border:2px solid var(--gold);border-radius:10px;padding:12px;transition:all 0.3s;opacity:0.3">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-                <div style="font-size:24px">⚡</div>
+                <div style="font-size:24px" class="mi">bolt</div>
                 <div>
                   <div style="font-size:14px;font-weight:700;color:var(--gold)">Gen C (Peak Service)</div>
                   <div style="font-size:11px;color:var(--muted)">Cap: 200 MW</div>
@@ -234,7 +253,7 @@
             <!-- Zone 2 -->
             <div style="background:#EBF2F8;border:2px solid var(--brand);border-radius:10px;padding:12px">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-                <div style="font-size:24px">🏭</div>
+                <div class="mi" style="font-size:24px;color:var(--brand)">factory</div>
                 <div>
                   <div style="font-size:14px;font-weight:700;color:var(--brand)">Zone 2</div>
                   <div style="font-size:11px;color:var(--muted)">Data Center</div>
@@ -260,20 +279,20 @@
       <div class="slide-tag">Live Grid Conditions</div>
       <h2>Real-time congestion pricing across the Midwest grid</h2>
       
-      <div style="margin:20px auto;max-width:1000px">
-        <div style="background:#FFFFFF;border:2px solid var(--border);border-radius:12px;padding:10px;box-shadow:0 4px 12px rgba(0,0,0,0.08)">
+      <div style="margin:15px auto;max-width:1000px">
+        <div style="background:#FFFFFF;border:2px solid var(--border);border-radius:12px;padding:8px;box-shadow:0 4px 12px rgba(0,0,0,0.08)">
           <iframe 
             src="https://api.misoenergy.org/MISORTWD/lmpcontourmap.html" 
-            style="width:100%;height:550px;border:none;border-radius:8px"
+            style="width:100%;height:420px;border:none;border-radius:8px"
             title="MISO Real-Time LMP Contour Map">
           </iframe>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:10px;text-align:center">
+        <div style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center">
           Source: MISO Energy Real-Time LMP Contour Map. Red/orange areas indicate transmission congestion driving higher local prices.
         </div>
       </div>
 
-      <div class="callout-gold" style="max-width:900px;margin:20px auto;font-size:14px">
+      <div class="callout-gold" style="max-width:900px;margin:12px auto;font-size:14px;padding:12px 16px">
         <strong class="em">Why this matters:</strong> These price differences reflect transmission constraints in real time. Predicting which lines will bind 24 hours ahead lets operators position resources before prices spike.
       </div>
     </section>
@@ -283,75 +302,25 @@
       <div class="slide-tag">The Operator's Challenge</div>
       <h2>Tuesday 10am: planning tomorrow's dispatch</h2>
       
-      <div style="max-width:950px;margin:30px auto">
-        <!-- VISUAL TIMELINE -->
-        <div style="background:#FFFFFF;border:2px solid var(--border);border-radius:12px;padding:25px;margin-bottom:25px;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
-          <div style="display:flex;align-items:center;justify-content:space-between;position:relative">
-            <!-- Timeline line -->
-            <div style="position:absolute;top:50%;left:5%;right:5%;height:3px;background:linear-gradient(to right, var(--brand) 0%, var(--brand) 40%, var(--muted) 40%, var(--muted) 60%, var(--accent) 60%, var(--accent) 100%);transform:translateY(-50%);z-index:0"></div>
-            
-            <!-- Point 1: NOW -->
-            <div style="flex:1;text-align:center;position:relative;z-index:1">
-              <div style="width:80px;height:80px;background:var(--brand);border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;border:4px solid white;box-shadow:0 2px 8px rgba(46,92,138,0.3)">
-                <span style="font-size:32px">🕙</span>
-              </div>
-              <div style="font-size:13px;font-weight:700;color:var(--brand);margin-bottom:4px">NOW</div>
-              <div style="font-size:11px;color:var(--muted)">Tuesday 10:00 AM</div>
-              <div style="font-size:10px;color:var(--brand);font-weight:600;margin-top:4px">← You are here</div>
-            </div>
-            
-            <!-- Point 2: DEADLINE -->
-            <div style="flex:1;text-align:center;position:relative;z-index:1">
-              <div style="width:70px;height:70px;background:var(--muted);border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;border:4px solid white;box-shadow:0 2px 8px rgba(108,117,125,0.2)">
-                <span style="font-size:28px">⏰</span>
-              </div>
-              <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:4px">DEADLINE</div>
-              <div style="font-size:11px;color:var(--muted)">Tuesday Noon</div>
-              <div style="font-size:10px;color:var(--muted);margin-top:4px">2 hours to decide</div>
-            </div>
-            
-            <!-- Point 3: RISK WINDOW -->
-            <div style="flex:1;text-align:center;position:relative;z-index:1">
-              <div style="width:80px;height:80px;background:var(--accent);border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;border:4px solid white;box-shadow:0 2px 8px rgba(168,66,63,0.3)">
-                <span style="font-size:32px">⚡</span>
-              </div>
-              <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:4px">RISK WINDOW</div>
-              <div style="font-size:11px;color:var(--muted)">Wed 5:00-7:00 PM</div>
-              <div style="font-size:10px;color:var(--accent);font-weight:600;margin-top:4px">Congestion likely</div>
-            </div>
-          </div>
+      <div style="max-width:850px;margin:20px auto">
+        <div class="callout" style="font-size:16px;padding:18px;margin-bottom:20px">
+          You're the transmission operator. You have 2 hours to finalize tomorrow's dispatch plan before the day-ahead market closes at noon.
         </div>
 
-        <div class="callout" style="font-size:15px;padding:20px;margin-bottom:25px">
-          You're the transmission system operator. It's Tuesday morning at 10am. You need to finalize tomorrow's day-ahead dispatch plan by noon. Tomorrow evening looks tricky.
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:25px;margin-bottom:25px">
-          <div style="background:#FDF6E8;border-radius:10px;padding:18px;border-left:4px solid var(--gold)">
-            <div style="font-size:14px;font-weight:700;color:var(--gold);margin-bottom:10px">📊 Tomorrow's Forecast</div>
-            <div style="font-size:13px;color:#495057;line-height:1.7">
-              • Peak demand: 1,850 MW (5-7pm)<br>
-              • Solar: 320 MW expected at 5pm<br>
-              • Two transmission outages in Zone Z-11<br>
-              • Gas prices elevated ($8.50/MMBtu)
-            </div>
-          </div>
-
-          <div style="background:#FAE9E9;border-radius:10px;padding:18px;border-left:4px solid var(--accent)">
-            <div style="font-size:14px;font-weight:700;color:var(--accent);margin-bottom:10px">⚠️ The Risk</div>
-            <div style="font-size:13px;color:#495057;line-height:1.7">
-              Zone Z-14 North transmission line has been binding during evening ramps lately. If solar output misses the forecast during tomorrow's 5-7pm window, you could face emergency redispatch costs exceeding $1M.
-            </div>
+        <div style="background:#FAE9E9;border-radius:10px;padding:20px;border-left:4px solid var(--accent);margin-bottom:20px">
+          <div style="font-size:15px;font-weight:700;color:var(--accent);margin-bottom:12px"><span class="mi" style="font-size:18px;vertical-align:middle">warning</span> The Problem</div>
+          <div style="font-size:14px;color:#495057;line-height:1.7">
+            Tomorrow evening (5-7pm) looks risky. Zone Z-14 North transmission line has been binding lately during these ramps. Solar forecast shows 320 MW, but misses happen. If congestion hits without preparation, emergency redispatch could cost over $1M.
           </div>
         </div>
 
         <div style="background:#F8F9FA;border-radius:12px;padding:20px;border:1px solid var(--border)">
-          <div style="font-size:14px;font-weight:700;color:var(--brand);margin-bottom:12px">💭 Your Decision</div>
-          <div style="font-size:14px;color:#495057;line-height:1.7;margin-bottom:14px">
-            You can pre-position 180 MW of flexible capacity in Zone Z-12 for $75,000. This would absorb potential transmission stress if congestion materializes. But if tomorrow is fine, you've wasted the money on unnecessary insurance.
+          <div style="font-size:15px;font-weight:700;color:var(--brand);margin-bottom:12px"><span class="mi" style="font-size:18px;vertical-align:middle">psychology</span> Your Choice</div>
+          <div style="font-size:14px;color:#495057;line-height:1.7;margin-bottom:12px">
+            Pay $75K now to pre-position 180 MW flexible capacity in Zone Z-12. This acts as insurance if congestion materializes. Or stick with the baseline plan and hope tomorrow stays clean.
           </div>
           <div style="font-size:13px;color:var(--muted);font-style:italic">
-            Do you pay $75K for insurance? Or roll the dice on the cheaper baseline plan?
+            What would you do?
           </div>
         </div>
       </div>
@@ -446,25 +415,25 @@
       <h2>Grid events don't have single causes</h2>
       <div class="cards" style="margin-top:13px">
         <div class="card">
-          <div class="icon">📈</div>
+          <div class="icon mi">trending_up</div>
           <h4>Electricity Demand</h4>
           <div class="muted">Hourly load per zone. Largest predictor of system stress.</div>
           <div style="margin-top:7px"><span class="badge" style="font-size:10px">Time series</span></div>
         </div>
         <div class="card">
-          <div class="icon">🌤️</div>
+          <div class="icon mi">wb_sunny</div>
           <h4>Weather</h4>
           <div class="muted">Temp, wind, cloud cover. Drives demand and renewable output.</div>
           <div style="margin-top:7px"><span class="badge" style="font-size:10px">Spatial + temporal</span></div>
         </div>
         <div class="card">
-          <div class="icon">⚡</div>
+          <div class="icon mi">bolt</div>
           <h4>Fuel Mix</h4>
           <div class="muted">Generation by source. Renewable swings create forecast errors.</div>
           <div style="margin-top:7px"><span class="badge" style="font-size:10px">Market signal</span></div>
         </div>
         <div class="card">
-          <div class="icon">🔧</div>
+          <div class="icon mi">build</div>
           <h4>Grid Outages</h4>
           <div class="muted">Line and equipment failures. Removes corridor capacity.</div>
           <div style="margin-top:7px"><span class="badge" style="font-size:10px">Topology signal</span></div>
@@ -540,14 +509,14 @@
         <div class="scale" style="margin:0 auto 30px;max-width:850px;height:65px">
           <div class="scale-fp" style="flex:1.2">
             <div>
-              <div style="font-size:20px">⚠️ False Alarm</div>
+              <div style="font-size:20px"><span class="mi" style="vertical-align:middle">warning</span> False Alarm</div>
               <div style="font-size:12px;margin-top:4px">Unnecessary reroute<br><strong style="font-size:13px">$10K–$100K</strong></div>
             </div>
           </div>
-          <div style="display:flex;align-items:center;padding:0 10px;background:#F8F9FA;border:1px solid var(--border);font-size:22px">⚖️</div>
+          <div style="display:flex;align-items:center;padding:0 10px;background:#F8F9FA;border:1px solid var(--border);font-size:22px" class="mi">balance</div>
           <div class="scale-fn" style="flex:2">
             <div>
-              <div style="font-size:20px">🚨 Missed Event</div>
+              <div style="font-size:20px"><span class="mi" style="vertical-align:middle">notification_important</span> Missed Event</div>
               <div style="font-size:12px;margin-top:4px">Emergency redispatch + reliability risk<br><strong style="font-size:13px">$200K–$2M+</strong></div>
             </div>
           </div>
@@ -573,12 +542,12 @@
           <div style="display:flex;gap:12px;margin-top:8px;font-size:9px;flex-wrap:wrap;justify-content:center">
             <span><span class="dot" style="background:var(--brand)"></span>Net load (after solar)</span>
             <span><span class="dot" style="background:var(--gold)"></span>Solar generation</span>
-            <span><span class="dot" style="background:var(--accent)"></span>⚠ Ramp risk window</span>
+            <span><span class="dot" style="background:var(--accent)"></span><span class="mi" style="font-size:14px;vertical-align:middle">warning</span> Ramp risk window</span>
           </div>
         </div>
         <div style="flex:1;display:flex;flex-direction:column;gap:10px">
           <div class="callout-red" style="padding:12px">
-            <div style="font-size:15px;font-weight:700;color:var(--accent);margin-bottom:8px">⚡ The forecasting challenge:</div>
+            <div style="font-size:15px;font-weight:700;color:var(--accent);margin-bottom:8px"><span class="mi" style="font-size:18px;vertical-align:middle">bolt</span> The forecasting challenge:</div>
             <div style="font-size:13px;line-height:1.6;color:#495057">
               Between 5–7pm, the grid needs to replace <strong>3,000+ MW of lost solar</strong> while demand peaks. Any forecast error in solar or load forces power flows to shift fast.
             </div>
@@ -612,10 +581,10 @@
       <div style="margin-top:15px">
         <!-- Encoder row -->
         <div class="encoder-row" id="encoderViz">
-          <div class="encoder"><div class="enc-icon">📈</div><div>Demand<br><span style="font-size:11px;color:var(--muted)">24-hr history</span></div></div>
-          <div class="encoder"><div class="enc-icon">⚡</div><div>Fuel Mix<br><span style="font-size:11px;color:var(--muted)">renewable share</span></div></div>
-          <div class="encoder"><div class="enc-icon">🌤️</div><div>Weather<br><span style="font-size:11px;color:var(--muted)">temp · wind · cloud</span></div></div>
-          <div class="encoder"><div class="enc-icon">🔧</div><div>Outages<br><span style="font-size:11px;color:var(--muted)">line/equip status</span></div></div>
+          <div class="encoder"><div class="enc-icon mi">trending_up</div><div>Demand<br><span style="font-size:11px;color:var(--muted)">24-hr history</span></div></div>
+          <div class="encoder"><div class="enc-icon mi">bolt</div><div>Fuel Mix<br><span style="font-size:11px;color:var(--muted)">renewable share</span></div></div>
+          <div class="encoder"><div class="enc-icon mi">wb_sunny</div><div>Weather<br><span style="font-size:11px;color:var(--muted)">temp · wind · cloud</span></div></div>
+          <div class="encoder"><div class="enc-icon mi" style="font-size:18px">build</div><div>Outages<br><span style="font-size:11px;color:var(--muted)">line/equip status</span></div></div>
         </div>
         <!-- Attention fusion -->
         <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin:13px 0">
@@ -624,7 +593,7 @@
           <div style="flex:1;height:2px;background:linear-gradient(90deg,var(--accent),transparent)"></div>
         </div>
         <div style="display:flex;justify-content:center">
-          <div class="out-block">✅ Risk Score + Expected Cost = Operator Alert</div>
+          <div class="out-block"><span class="mi" style="vertical-align:middle">check_circle</span> Risk Score + Expected Cost = Operator Alert</div>
         </div>
         <div style="margin-top:15px;display:flex;gap:11px;flex-wrap:wrap;justify-content:center">
           <div class="callout" style="flex:1;min-width:210px;padding:9px 13px;font-size:12px">
@@ -696,7 +665,7 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px">
           <div style="background:#EBF2F8;border-radius:10px;padding:16px;border-left:4px solid var(--brand)">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-              <div style="font-size:20px">📈</div>
+              <div style="font-size:20px" class="mi">trending_up</div>
               <h3 style="font-size:15px;color:var(--brand);margin:0">Demand</h3>
             </div>
             <div style="font-size:12px;color:#495057;line-height:1.6">
@@ -706,7 +675,7 @@
 
           <div style="background:#FDF6E8;border-radius:10px;padding:16px;border-left:4px solid var(--gold)">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-              <div style="font-size:20px">🌤️</div>
+              <div style="font-size:20px" class="mi">wb_sunny</div>
               <h3 style="font-size:15px;color:var(--gold);margin:0">Weather</h3>
             </div>
             <div style="font-size:12px;color:#495057;line-height:1.6">
@@ -716,7 +685,7 @@
 
           <div style="background:#E8F5F5;border-radius:10px;padding:16px;border-left:4px solid var(--green)">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-              <div style="font-size:20px">⚡</div>
+              <div style="font-size:20px" class="mi">bolt</div>
               <h3 style="font-size:15px;color:var(--green);margin:0">Fuel Mix</h3>
             </div>
             <div style="font-size:12px;color:#495057;line-height:1.6">
@@ -726,7 +695,7 @@
 
           <div style="background:#FAE9E9;border-radius:10px;padding:16px;border-left:4px solid var(--accent)">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-              <div style="font-size:20px">🔧</div>
+              <div class="mi" style="font-size:20px;color:var(--brand)">build</div>
               <h3 style="font-size:15px;color:var(--accent);margin:0">Outages</h3>
             </div>
             <div style="font-size:12px;color:#495057;line-height:1.6">
@@ -737,7 +706,7 @@
 
         <!-- Fusion approach -->
         <div style="background:#EBF2F8;border:2px solid var(--brand);border-radius:12px;padding:18px;margin-bottom:18px">
-          <h3 style="font-size:16px;color:var(--brand);margin-bottom:10px">⏱️ Context-Aware Fusion</h3>
+          <h3 style="font-size:16px;color:var(--brand);margin-bottom:10px"><span class="mi" style="font-size:18px;vertical-align:middle">timer</span> Context-Aware Fusion</h3>
           <div style="font-size:13px;color:#495057;line-height:1.7">
             All four signals become time series with 24-hour lookback. LSTM encoders learn temporal patterns from historical data. The <strong style="color:var(--gold)">cross-attention layer</strong> decides which signal matters most <strong style="color:var(--gold)">for each hour ahead</strong>, then outputs a risk probability and cost estimate.
           </div>
@@ -761,17 +730,17 @@
         <div style="display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:30px">
           <!-- Input streams -->
           <div style="display:flex;flex-direction:column;gap:8px">
-            <div style="padding:8px 12px;background:#F8F9FA;border-radius:6px;font-size:11px;text-align:center;border-left:3px solid var(--brand);border:1px solid var(--border)">📈 Demand<br><span style="font-size:9px;color:var(--muted)">1,850 MW peak</span></div>
-            <div style="padding:8px 12px;background:#F8F9FA;border-radius:6px;font-size:11px;text-align:center;border-left:3px solid var(--gold);border:1px solid var(--border)">🌤️ Weather<br><span style="font-size:9px;color:var(--muted)">Solar 320 MW</span></div>
-            <div style="padding:8px 12px;background:#F8F9FA;border-radius:6px;font-size:11px;text-align:center;border-left:3px solid var(--green);border:1px solid var(--border)">⚡ Fuel Mix<br><span style="font-size:9px;color:var(--muted)">High gas prices</span></div>
-            <div style="padding:8px 12px;background:#F8F9FA;border-radius:6px;font-size:11px;text-align:center;border-left:3px solid var(--accent);border:1px solid var(--border)">🔧 Outages<br><span style="font-size:9px;color:var(--muted)">2 in Zone Z-11</span></div>
+            <div style="padding:8px 12px;background:#F8F9FA;border-radius:6px;font-size:11px;text-align:center;border-left:3px solid var(--brand);border:1px solid var(--border)"><span class="mi" style="font-size:14px">trending_up</span> Demand<br><span style="font-size:9px;color:var(--muted)">1,850 MW peak</span></div>
+            <div style="padding:8px 12px;background:#F8F9FA;border-radius:6px;font-size:11px;text-align:center;border-left:3px solid var(--gold);border:1px solid var(--border)"><span class="mi" style="font-size:14px">wb_sunny</span> Weather<br><span style="font-size:9px;color:var(--muted)">Solar 320 MW</span></div>
+            <div style="padding:8px 12px;background:#F8F9FA;border-radius:6px;font-size:11px;text-align:center;border-left:3px solid var(--green);border:1px solid var(--border)"><span class="mi" style="font-size:14px">bolt</span> Fuel Mix<br><span style="font-size:9px;color:var(--muted)">High gas prices</span></div>
+            <div style="padding:8px 12px;background:#F8F9FA;border-radius:6px;font-size:11px;text-align:center;border-left:3px solid var(--accent);border:1px solid var(--border)"><span class="mi" style="font-size:14px;vertical-align:middle">build</span> Outages<br><span style="font-size:9px;color:var(--muted)">2 in Zone Z-11</span></div>
           </div>
           
           <div style="font-size:16px;color:var(--muted);font-weight:600">⟹</div>
           
           <!-- Attention weighting -->
           <div style="background:#EBF2F8;border:2px solid var(--brand);border-radius:10px;padding:16px;text-align:center;min-width:240px">
-            <div style="font-size:13px;font-weight:700;color:var(--brand);margin-bottom:10px">⚙️ Cross-Attention Layer</div>
+            <div style="font-size:13px;font-weight:700;color:var(--brand);margin-bottom:10px"><span class="mi" style="font-size:16px;vertical-align:middle">settings</span> Cross-Attention Layer</div>
             <div style="font-size:10px;color:#495057;margin-bottom:12px">Weights each signal for <strong style="color:var(--gold)">tomorrow 5pm</strong></div>
             <div style="display:flex;flex-direction:column;gap:4px">
               <div style="display:flex;align-items:center;gap:8px">
@@ -809,7 +778,7 @@
           
           <!-- Output alert -->
           <div style="background:#E8F5F5;border:2px solid var(--green);border-radius:10px;padding:16px;min-width:260px">
-            <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px">🚨 OPERATOR ALERT</div>
+            <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px"><span class="mi" style="font-size:14px;vertical-align:middle">notification_important</span> OPERATOR ALERT</div>
             <div style="font-size:10px;color:#495057;line-height:1.6">
               <strong style="color:var(--gold)">Zone Z-14 North</strong><br>
               Tomorrow 5:00–7:00 PM<br>
@@ -832,61 +801,30 @@
     <!-- ═══════════ SLIDE 15 — THE DECISION ═══════════ -->
     <section>
       <div class="slide-tag">Day-Ahead Decision</div>
-      <h2>Back to Tuesday 10am: the model's recommendation</h2>
+      <h2>Back to Tuesday 10am: what would you do?</h2>
       
       <!-- SIMPLIFIED SCENARIO REMINDER -->
-      <div style="max-width:900px;margin:20px auto 25px">
-        <div style="background:#EBF2F8;border:2px solid var(--brand);border-radius:10px;padding:18px;display:flex;align-items:center;gap:20px">
-          <div style="font-size:48px;line-height:1">🕙</div>
-          <div style="flex:1">
-            <div style="font-size:15px;font-weight:700;color:var(--brand);margin-bottom:6px">Remember Slide 4?</div>
-            <div style="font-size:13px;color:#495057;line-height:1.6">
-              It's Tuesday 10am. You have 2 hours to decide: pre-position 180 MW flexible capacity for $75K, or risk emergency costs if congestion hits tomorrow evening (5-7pm). <strong>Now the model provides an answer.</strong>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- THE ALERT -->
-      <div style="background:#E8F5F5;border:2px solid var(--green);border-radius:12px;padding:18px;margin:20px auto 25px;max-width:900px">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:15px">
-          <div style="font-size:28px">🚨</div>
-          <div>
-            <div style="font-size:17px;font-weight:700;color:var(--green)">CONGESTION RISK ALERT: Tomorrow 5:00-7:00 PM</div>
-            <div style="font-size:12px;color:var(--muted)">Zone Z-14 North | Binding probability: <strong style="color:var(--accent)">84%</strong> | Estimated cost if unmitigated: <strong style="color:var(--accent)">$950K–$1.4M</strong></div>
-          </div>
-        </div>
-        <div style="padding:13px;background:#E8F5F5;border-left:3px solid var(--green);border-radius:6px">
-          <div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:5px">📋 MODEL RECOMMENDATION:</div>
-          <div style="font-size:13px;color:#495057;line-height:1.6">Pre-commit <strong style="color:var(--green)">180 MW flexible capacity</strong> in Zone Z-12. Cost: <strong style="color:var(--gold)">$75K</strong></div>
+      <div style="max-width:800px;margin:20px auto 30px">
+        <div class="callout" style="font-size:14px;padding:16px">
+          The model flagged tomorrow evening (5-7pm) as high risk: 84% binding probability, potential $950K-$1.4M cost. Recommendation: pre-commit 180 MW flexible capacity for $75K.
         </div>
       </div>
 
-      <!-- INTERACTIVE CHOICE -->
-      <div style="max-width:700px;margin:0 auto">
-        <h3 style="font-size:18px;color:var(--gold);margin-bottom:15px;text-align:center">What would you do?</h3>
+      <!-- TWO OPTIONS -->
+      <div style="max-width:800px;margin:0 auto">
+        <h3 style="font-size:18px;color:var(--brand);margin-bottom:20px;text-align:center">What would you do?</h3>
         
-        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
-          <label style="display:flex;align-items:center;gap:12px;font-size:15px;color:var(--text);cursor:pointer;padding:16px;background:#F8F9FA;border-radius:10px;border:2px solid var(--border);transition:all 0.2s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='var(--border)'">
-            <input type="radio" name="stratChoice" value="ignore" checked onchange="updateStrategyOutcome()" style="accent-color:var(--accent);width:22px;height:22px">
-            <span>❌ <strong>Ignore the forecast</strong><br><span style="font-size:12px;color:var(--muted);margin-left:34px">Proceed with cheap baseline strategy (baseload + renewables)</span></span>
-          </label>
-          <label style="display:flex;align-items:center;gap:12px;font-size:15px;color:var(--text);cursor:pointer;padding:16px;background:#F8F9FA;border-radius:10px;border:2px solid var(--border);transition:all 0.2s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="if(!this.querySelector('input').checked) this.style.borderColor='var(--border)'">
-            <input type="radio" name="stratChoice" value="mitigate" onchange="updateStrategyOutcome()" style="accent-color:var(--green);width:22px;height:22px">
-            <span>✅ <strong>Act on the forecast</strong><br><span style="font-size:12px;color:var(--muted);margin-left:34px">Add 180 MW flexible capacity in Zone Z-12 ($75K)</span></span>
-          </label>
-        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <!-- OPTION 1 -->
+          <div style="background:#F8F9FA;border:2px solid var(--border);border-radius:12px;padding:22px;text-align:center">
+            <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:10px">Option A: Baseline</div>
+            <div style="font-size:13px;color:#495057;line-height:1.6">Proceed with low-cost plan<br>(baseload + renewables)</div>
+          </div>
 
-        <!-- OUTCOME BOX -->
-        <div style="background:#F8F9FA;border-radius:12px;padding:5px;border:1px solid var(--border)">
-          <div style="background:#FFFFFF;border-radius:10px;padding:20px;border:1px solid var(--border)">
-            <div style="font-size:13px;color:var(--gold);font-weight:600;margin-bottom:12px;text-transform:uppercase;letter-spacing:1.2px">⏰ Tomorrow at 5:00 PM</div>
-            <div id="stratOutcome" style="padding:16px;background:#FAE9E9;border:2px solid var(--accent);border-radius:10px">
-              <div style="font-size:13px;color:var(--accent);font-weight:600;margin-bottom:8px">What happens:</div>
-              <div style="font-size:13px;color:#495057;line-height:1.7;margin-bottom:12px">Solar output drops 15% below forecast. Zone Z-14 transmission line hits capacity. Emergency redispatch required.</div>
-              <div style="font-size:42px;font-weight:700;color:var(--accent)">$1,300,000</div>
-              <div style="font-size:12px;color:var(--muted);margin-top:3px">Total cost</div>
-            </div>
+          <!-- OPTION 2 -->
+          <div style="background:#F8F9FA;border:2px solid var(--border);border-radius:12px;padding:22px;text-align:center">
+            <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:10px">Option B: Mitigate</div>
+            <div style="font-size:13px;color:#495057;line-height:1.6">Pre-commit 180 MW flexible capacity<br>($75K cost)</div>
           </div>
         </div>
       </div>
@@ -904,7 +842,7 @@
           <!-- WITHOUT -->
           <div style="text-align:center">
             <div style="background:#FAE9E9;border:3px solid var(--accent);border-radius:12px;padding:22px">
-              <div style="font-size:20px;margin-bottom:10px">❌</div>
+              <div style="font-size:20px;margin-bottom:10px" class="mi">cancel</div>
               <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:12px">Ignore the alert</div>
               <div style="font-size:13px;color:#495057;line-height:1.6;margin-bottom:14px">Proceed with low-cost strategy<br>(baseload + renewables)</div>
               <div style="padding:12px;background:#FFFFFF;border:1px solid var(--border);border-radius:8px">
@@ -922,7 +860,7 @@
           <!-- WITH -->
           <div style="text-align:center">
             <div style="background:#E8F5F5;border:3px solid var(--green);border-radius:12px;padding:22px">
-              <div style="font-size:20px;margin-bottom:10px">✅</div>
+              <div style="font-size:20px;margin-bottom:10px" class="mi">check_circle</div>
               <div style="font-size:16px;font-weight:700;color:var(--green);margin-bottom:12px">Act on the alert</div>
               <div style="font-size:13px;color:#495057;line-height:1.6;margin-bottom:14px">Add 180 MW flexible<br>capacity in Zone Z-12</div>
               <div style="padding:12px;background:#FFFFFF;border:1px solid var(--border);border-radius:8px">
@@ -953,7 +891,56 @@
       </div>
     </section>
 
-    <!-- ═══════════ SLIDE 17 — CITATIONS ═══════════ -->
+    <!-- ═══════════ SLIDE 17 — APPLYING TO LILLY ═══════════ -->
+    <section>
+      <div class="slide-tag">Transfer Learning</div>
+      <h2>Thinking about Lilly...</h2>
+      
+      <div style="max-width:950px;margin:25px auto">
+        <div class="callout-blue" style="font-size:14px;margin-bottom:30px;padding:16px">
+          <strong class="em">Where similar principles might apply:</strong> Multi-source fusion, cost-aware thresholds, early warning systems.
+        </div>
+
+        <!-- FOUR APPLICATION IDEAS -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:850px;margin:0 auto">
+          
+          <!-- IDEA 1: PATIENT SAFETY -->
+          <div style="background:#F8F9FA;border:2px solid var(--brand);border-radius:12px;padding:22px;text-align:center">
+            <div style="font-size:32px;margin-bottom:12px" class="mi">local_hospital</div>
+            <div style="font-size:16px;font-weight:700;color:var(--brand);margin-bottom:8px">Patient Safety Events</div>
+            <div style="font-size:13px;color:#495057;line-height:1.6">Early detection in trials and post-market surveillance</div>
+          </div>
+
+          <!-- IDEA 2: SUPPLY CHAIN -->
+          <div style="background:#F8F9FA;border:2px solid var(--gold);border-radius:12px;padding:22px;text-align:center">
+            <div style="font-size:32px;margin-bottom:12px" class="mi">inventory_2</div>
+            <div style="font-size:16px;font-weight:700;color:var(--gold);margin-bottom:8px">Supply Chain Disruption</div>
+            <div style="font-size:13px;color:#495057;line-height:1.6">Ingredient shortages, manufacturing delays, logistics risk</div>
+          </div>
+
+          <!-- IDEA 3: DEMAND FORECASTING -->
+          <div style="background:#F8F9FA;border:2px solid var(--green);border-radius:12px;padding:22px;text-align:center">
+            <div style="font-size:32px;margin-bottom:12px" class="mi">trending_up</div>
+            <div style="font-size:16px;font-weight:700;color:var(--green);margin-bottom:8px">Demand Volatility</div>
+            <div style="font-size:13px;color:#495057;line-height:1.6">Product launches, market shifts, seasonal patterns</div>
+          </div>
+
+          <!-- IDEA 4: TRIAL ENROLLMENT -->
+          <div style="background:#F8F9FA;border:2px solid var(--accent);border-radius:12px;padding:22px;text-align:center">
+            <div style="font-size:32px;margin-bottom:12px" class="mi">science</div>
+            <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:8px">Clinical Trial Delays</div>
+            <div style="font-size:13px;color:#495057;line-height:1.6">Recruitment bottlenecks, site performance issues</div>
+          </div>
+
+        </div>
+
+        <div style="text-align:center;margin-top:30px">
+          <div style="font-size:13px;color:var(--muted);font-style:italic">Initial thoughts—would love to understand where you see the biggest opportunities.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ SLIDE 18 — CITATIONS ═══════════ -->
     <section>
       <div class="slide-tag">References</div>
       <h2>Citations</h2>
@@ -1116,7 +1103,7 @@
     const rampX = scX(16); const rampW = scX(20) - rampX;
     svg.appendChild(svgEl('rect', {x:rampX, y:pad, width:rampW, height:gh, fill:'#FAE9E9', opacity:0.9}));
     const rampLabel = svgEl('text', {x:rampX+4, y:pad+13, fill:'var(--accent)', 'font-size':10, 'font-weight':'600'});
-    rampLabel.textContent = '⚠ Ramp risk';
+    rampLabel.textContent = 'Ramp risk';
     svg.appendChild(rampLabel);
     // solar area
     let solarArea = `M ${scX(0)} ${scY(0)}`;
@@ -1296,7 +1283,7 @@
     });
   }
 
-  Reveal.on('ready', () => { renderAll(); updateDemo(); updateStrategyOutcome(); });
+  Reveal.on('ready', () => { renderAll(); updateDemo(); });
   Reveal.on('slidechanged', () => { renderAll(); });
 </script>
 <script>
@@ -1323,7 +1310,7 @@
         <div style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:4px">Tomorrow at 5:00 PM:</div>
         <div style="font-size:11px;color:#495057;line-height:1.5">Solar output drops 15% below forecast, but the flexible unit in Z-12 absorbs the ramp. Zone Z-14 stays within capacity. No emergency action needed.</div>
         <div style="font-size:20px;font-weight:700;color:var(--green);margin-top:8px">Total cost: $75,000</div>
-        <div style="font-size:10px;color:var(--gold);margin-top:6px;font-weight:600">💰 Savings: $1,225,000 (94% reduction)</div>
+        <div style="font-size:10px;color:var(--gold);margin-top:6px;font-weight:600">Savings: $1,225,000 (94% reduction)</div>
       `;
     }
   }
@@ -1409,15 +1396,15 @@
     const boxEl = document.getElementById('demoStatusBox');
     if(statusEl && boxEl){
       if(anyOver && !apply){
-        statusEl.textContent = '🚨 CONSTRAINT BINDING: lines over capacity';
+        statusEl.textContent = 'CONSTRAINT BINDING: lines over capacity';
         statusEl.style.color = '#ff9580';
         boxEl.style.borderLeftColor = 'var(--accent)';
       } else if(anyOver && apply){
-        statusEl.textContent = '⚠️ Risk reduced, AI mitigation active';
+        statusEl.textContent = 'Risk reduced, AI mitigation active';
         statusEl.style.color = 'var(--gold)';
         boxEl.style.borderLeftColor = 'var(--gold)';
       } else {
-        statusEl.textContent = '✅ OK, no constraint binding';
+        statusEl.textContent = 'OK, no constraint binding';
         statusEl.style.color = 'var(--green)';
         boxEl.style.borderLeftColor = 'var(--brand)';
       }
@@ -1533,7 +1520,7 @@
       }
       
       if (lineCapacity) {
-        lineCapacity.textContent = '⚠ Limit: 200 MW';
+        lineCapacity.textContent = 'Limit: 200 MW';
         lineCapacity.setAttribute('fill', '#e05c3a');
       }
       if (lineFlow) {
@@ -1544,16 +1531,16 @@
 
       // Cost summary - with congestion
       if (costSummary) costSummary.innerHTML = `
-        <div style="background:#FAE9E9;border:3px solid var(--accent);border-radius:12px;padding:14px;text-align:center">
+        <div style="background:#FAE9E9;border:3px solid var(--accent);border-radius:12px;padding:14px;text-align:center;max-width:700px;margin:0 auto">
           <div style="font-size:12px;color:var(--muted);margin-bottom:6px">TOTAL COST</div>
-          <div style="font-size:44px;font-weight:700;color:var(--accent)">$56,000</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">
-            Gen A: 800 MW × $20 = $16K | <span style="color:var(--accent);font-weight:600">Gen B: 400 MW × $100 = $40K</span>
+          <div style="font-size:40px;font-weight:700;color:var(--accent)">$56,000</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5">
+            Gen A: 800 MW × $20 = $16K<br>
+            <span style="color:var(--accent);font-weight:600">Gen B: 400 MW × $100 = $40K</span>
           </div>
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(224,92,58,0.3)">
-            <div style="font-size:12px;color:var(--accent);font-weight:600">CONGESTION COST</div>
-            <div style="font-size:32px;font-weight:700;color:var(--accent);margin-top:2px">+$32,000</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px">400 MW @ $100 instead of $20</div>
+            <div style="font-size:11px;color:var(--accent);font-weight:600">CONGESTION COST: +$32,000</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px">400 MW @ $100 instead of $20</div>
           </div>
         </div>
       `;
@@ -1591,7 +1578,7 @@
       }
       
       if (lineCapacity) {
-        lineCapacity.textContent = '⚠ Limit: 200 MW';
+        lineCapacity.textContent = 'Limit: 200 MW';
         lineCapacity.setAttribute('fill', '#e05c3a');
       }
       if (lineFlow) {
@@ -1602,16 +1589,17 @@
 
       // Cost summary - with fast-start mitigation
       if (costSummary) costSummary.innerHTML = `
-        <div style="background:#FDF6E8;border:3px solid var(--gold);border-radius:12px;padding:14px;text-align:center">
+        <div style="background:#FDF6E8;border:3px solid var(--gold);border-radius:12px;padding:14px;text-align:center;max-width:700px;margin:0 auto">
           <div style="font-size:12px;color:var(--muted);margin-bottom:6px">TOTAL COST</div>
-          <div style="font-size:44px;font-weight:700;color:var(--gold)">$48,000</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">
-            Gen A: 800 MW × $20 = $16K | <span style="color:var(--gold);font-weight:600">Gen C: 200 MW × $60 = $12K</span> | <span style="color:var(--accent)">Gen B: 200 MW × $100 = $20K</span>
+          <div style="font-size:40px;font-weight:700;color:var(--gold)">$48,000</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5">
+            Gen A: 800 MW × $20 = $16K<br>
+            <span style="color:var(--gold);font-weight:600">Gen C: 200 MW × $60 = $12K</span><br>
+            <span style="color:var(--accent)">Gen B: 200 MW × $100 = $20K</span>
           </div>
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,210,127,0.3)">
-            <div style="font-size:12px;color:var(--gold);font-weight:600">MITIGATION SAVINGS</div>
-            <div style="font-size:32px;font-weight:700;color:var(--gold);margin-top:2px">−$8,000</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px">Emergency dispatch plant displaces 200 MW of expensive Gen B</div>
+            <div style="font-size:11px;color:var(--gold);font-weight:600">MITIGATION SAVINGS: −$8,000</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px">Fast-start plant displaces 200 MW of Gen B</div>
           </div>
         </div>
       `;
